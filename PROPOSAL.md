@@ -4,8 +4,8 @@ Colin Reeder & Tony Brar
 
 ## Needs and Opportunities
 Games exist like this, but they're not good enough. Most similar RTS games (of low enough complexity
-that they could be played in a browser) are too simple to be enjoyable for long, and most imporantly
-they dont't have multiplayer. 
+that they could be played in a browser) are too simple to be enjoyable for long, and most importantly
+they don't have multiplayer. 
 
 ## Audience / Clients / Users
 Anyone who wants to play an RTS game. I'm sure we can find some from the computer science class,
