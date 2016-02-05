@@ -1,0 +1,19 @@
+2/5/16:
+	This week I studied what we can do with Heroku, and
+	whether it's going to be suitable for our project.
+	So far, it appears that it will work, since it has
+	support for plenty of technologies, including
+	Node.js, websockets, and PostgreSQL, which we'll
+	probably be using.  I wrote a rough protocol
+	specification outlining generally what we're going
+	to do for client-server-communication.  I also put
+	together the initial server implementation, with a
+	very bare-bones web server and a slightly more
+	useful WebSocket server.  It's no game yet, but
+	we're getting there.  As far as I can tell, Heroku
+	only works with HTTP traffic, which is why the
+	server is using WebSockets instead of normal
+	sockets.  It's likely that we'll need a web server
+	anyway though, so I think it's a good idea.  I also
+	set up a PostgreSQL server on Heroku and my laptop.
+	I studied migrate-db and it looks quite useful.
