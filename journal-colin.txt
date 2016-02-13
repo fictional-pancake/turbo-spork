@@ -16,4 +16,24 @@
 	sockets.  It's likely that we'll need a web server
 	anyway though, so I think it's a good idea.  I also
 	set up a PostgreSQL server on Heroku and my laptop.
-	I studied migrate-db and it looks quite useful.
+	I studied db-migrate and it looks quite useful.
+
+2/13/16:
+	This week I started working with db-migrate and
+	used it to set up the users table in the database.
+	I also briefly studied password hashing methods and
+	(probably prematurely) settled on bcrypt.  Not that
+	we store any sensitive data at all, but prevention
+	is simple and good practice.  I found
+	bcrypt-nodejs, which should simplify trying to use
+	it.  It seems to store the salt as part of the
+	hash, so we don't need a separate column for that.
+	In other news, I did a little more work on the game
+	server, laying foundations to make it easier to
+	handle messages from the client, and using that to
+	allow users to join game rooms, though they're not
+	actually useful yet, currently they only notify
+	other users of your presence.  I also tried to
+	detect disconnections and remove those players
+	from their rooms.  I think it's working, but
+	that's what testing is for!
