@@ -1,3 +1,22 @@
+###### 2/12/16
+This week I learned how to actually display a webpage with Node.
+It seems surprisingly easy. Node handles most of the stuff and just
+gives you variables for stuff like the page the user requested.
+You can just print out whatever easily and that's it. I expected
+to have to learn a bunch of stuff about HTTP but I didn't. We also
+figured out how to use PostgreSQL with Node to easily access the
+database that Heroku allows us to use. It was also much easier than
+when I tried to create a website a few years ago. I set up the a tool
+called migrate-db (or maybe it was db-migrate) that allows me to
+set up the database on my computer. You create a simple Javascript
+file with easily readable instructions on how to recreate the database
+and it sets up the tables. It doesn't actually copy the data however,
+but that shouldn't be an issue because we will mostly be working with
+a few test values for now. Our next step is to create a signup page
+where users can create an account to be used for playing the game. We
+decided to make an account required to play the game because it would
+be easier for us.
+
 ###### 2/5/16
 This week we mostly ironed out how we are going to do the game.
 Previously we were thinking of writing the server in Java for
