@@ -37,3 +37,23 @@
 	detect disconnections and remove those players
 	from their rooms.  I think it's working, but
 	that's what testing is for!
+
+2/21/16:
+	This week (I start these with that phrase every
+	time...) I worked more on the socket server, making
+	it possible to start a game, though all that means
+	right now is generating a few nodes with random
+	positions and sending them to the clients.  We
+	decided to make the battlefield have width and
+	height of 100 internally for simplicity, and we'll
+	scale it up to the screen size in the client once
+	that actually exists.  I also changed the initial
+	authentication message to actually do logins from
+	the database.  Hopefully soon we'll figure out how
+	the game mechanics are going to work well enough to
+	implement them.  I'm not sure how much to leave to
+	the clients and how much to handle server-side,
+	since there are advantages to both, and both will
+	have to do some computation.  We learned that the
+	database is probably not scrublord, and can do
+	queries.
