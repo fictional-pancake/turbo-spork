@@ -1,4 +1,22 @@
 ###### 2/12/16
+This week I worked on making a sign-up page. The page itself right
+now is just a minimal HTML form, because I don't really care about
+that part very much. I had to learn how to access POST variables
+with Node and ended up using a script from StackOverflow that
+nicely puts them in an array for you to use. I also learned how to
+query the PostrgreSQL database and began the slow process of
+remembering how to use SQL. The page that runs the actual
+sign-up process checks if the user exists and if they do, does
+nothing. If they don't exist, it will create their entry in the database
+(after I remember how to do that). We originally were going to
+assign every user a unique numerical ID but instead decided to
+make usernames unique for that purpose instead. Our vaguely
+defined Deliverable 1 goal of a server is technically already met,
+but what it will probably end up meaning is a server that can send
+and receive messages from the client and discard them, as well as
+managing accounts that mean nothing.
+
+###### 2/12/16
 This week I learned how to actually display a webpage with Node.
 It seems surprisingly easy. Node handles most of the stuff and just
 gives you variables for stuff like the page the user requested.
