@@ -57,3 +57,23 @@
 	have to do some computation.  We learned that the
 	database is probably not scrublord, and can do
 	queries.
+
+2/28/16:
+	Not much to say for this week.  Not much really
+	happened, but we did get more visible work done
+	than usual.  The signup page works now!  Probably.
+	Last week, the progress was limited to having a
+	page and checking whether the user "post.username"
+	exists because Tony did it wrong.  Now, we check
+	that their chosen username doesn't already exist
+	and that it doesn't contain a colon, because we
+	use that as a delimeter in the auth message, then
+	adds the user to the database.  Perhaps we should
+	ban other characters, but we haven't yet had a
+	good argument either way.  Initially, the database
+	had an id column, but we didn't really need it, so
+	I added a migration to delete the table and
+	recreate it because db-migrate is annoying about
+	messing with the primary key.  We had an issue with
+	a race condition causing the post data to never be
+	recieved occasionally.  Hopefully it's fixed now.
