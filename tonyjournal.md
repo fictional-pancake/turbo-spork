@@ -1,4 +1,26 @@
-###### 2/12/16
+###### 2/26/16
+I'm pretty sure accounts are finished now. When we tested it there
+was an issue because the user ID field still existed, so Colin
+removed it. Apparently removing fields is a challenge of the highest
+order when using db-migrate. Other than that, it is now possible to
+sign up for an account. I don't like that we are using username instead
+of a numeric ID for uniquely identifying users, but I couldn't think
+of a good reason not to so we're doing it. We are now trying to figure
+out when/how the client and server will communicate. For example, when
+an event happens like units leaving a node, the client tells the server
+that it is moving those units. But does it tell the server how many
+units leave that particular kind of node, or does the server figure it
+out? And does the server tell all of the clients how long the units will
+take to arrive? We want to make sure that the client and server do not
+get out of sync, because that would ruin the match. I think we should
+have the server tell all the clients every time an event begins or ends,
+like when units are sent from a node as well as when they arrive at a new
+one. That way, if one of the clients loses track of where some units are
+while traveling between nodes, it can just catch them up when they
+arrive. It might look a little bit weird if they just jump to the correct
+position but that is unavoidable.
+
+###### 2/19/16
 This week I worked on making a sign-up page. The page itself right
 now is just a minimal HTML form, because I don't really care about
 that part very much. I had to learn how to access POST variables
