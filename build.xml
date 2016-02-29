@@ -1,0 +1,14 @@
+<project name="turbo-spork" default="jar" basedir=".">
+	<property name="src" location="src"/>
+	<property name="classes" location="build/classes"/>
+	<property name="dist" location="build/dist"/>
+
+	<target name="compile">
+		<mkdir dir="${classes}" />
+		<javac srcdir="${src}" destdir="${classes}" />
+	</target>
+	<target name="jar" depends="compile">
+		<mkdir dir="${dist}" />
+		<jar jarfile="${dist}/turbo-spork.jar" basedir="${classes}" manifest="MANIFEST.MF" />
+	</target>
+</project>
