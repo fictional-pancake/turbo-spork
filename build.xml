@@ -5,10 +5,16 @@
 
 	<target name="compile">
 		<mkdir dir="${classes}" />
-		<javac srcdir="${src}" destdir="${classes}" />
+		<javac srcdir="${src}" destdir="${classes}">
+			<classpath>
+				<fileset dir="lib" includes="*.jar" />
+			</classpath>
+		</javac>
 	</target>
 	<target name="jar" depends="compile">
 		<mkdir dir="${dist}" />
-		<jar jarfile="${dist}/turbo-spork.jar" basedir="${classes}" manifest="MANIFEST.MF" />
+		<jar jarfile="${dist}/turbo-spork.jar" basedir="${classes}" manifest="MANIFEST.MF">
+			<zipgroupfileset dir="lib" includes="*.jar" />
+		</jar>
 	</target>
 </project>

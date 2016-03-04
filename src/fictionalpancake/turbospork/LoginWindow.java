@@ -1,9 +1,18 @@
 package fictionalpancake.turbospork;
 
+import org.java_websocket.WebSocket;
+import org.java_websocket.WebSocketAdapter;
+import org.java_websocket.WebSocketImpl;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.drafts.Draft_76;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.Socket;
 
 public class LoginWindow extends JPanel implements ActionListener {
 
@@ -15,20 +24,12 @@ public class LoginWindow extends JPanel implements ActionListener {
     private JProgressBar bar;
     private JLabel errorLabel;
 
-    public LoginWindow() {
-        setLayout(new GridBagLayout());
+    private JFrame window;
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+    public LoginWindow(JFrame frame) {
+        this.window = frame;
+
+        setLayout(new GridBagLayout());
 
         username = new JTextField();
         username.setColumns(INPUT_SIZE);
@@ -72,7 +73,7 @@ public class LoginWindow extends JPanel implements ActionListener {
 
     public static JFrame open() {
         JFrame frame = new JFrame("Login to Turbo-Spork");
-        JPanel panel = new LoginWindow();
+        JPanel panel = new LoginWindow(frame);
         frame.add(panel);
         frame.setSize(250, 150);
         frame.setVisible(true);
@@ -81,24 +82,53 @@ public class LoginWindow extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        errorLabel.setText("");
         username.setEnabled(false);
         password.setEnabled(false);
         loginButton.setEnabled(false);
         bar.setVisible(true);
         new Thread(new Runnable() {
-
             @Override
             public void run() {
+                GameHandler gh = new GameHandler(new DataListener<String>() {
+                    @Override
+                    public void onData(String data) {
+                        int colonPos = data.indexOf(':');
+                        String firstPart = data.substring(0, colonPos);
+                        String lastPart = data.substring(colonPos + 1);
+                        if(firstPart.equals("join")) {
+                            JFrame dialog = new JFrame();
+                            JLabel label = new JLabel("Welcome to the absence of a game!");
+                            dialog.add(label);
+                            dialog.setSize(250, 50);
+                            dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            dialog.setVisible(true);
+                            window.setVisible(false);
+                            System.out.println(data);
+                        }
+                        else {
+                            username.setEnabled(true);
+                            password.setEnabled(true);
+                            loginButton.setEnabled(true);
+                            bar.setVisible(false);
+                            if(firstPart.equals("error")) {
+                                errorLabel.setText(lastPart);
+                            }
+                            else {
+                                errorLabel.setText("Unable to parse server response.");
+                                System.err.println("Unable to parse response:");
+                                System.err.println(data);
+                            }
+                        }
+                    }
+                });
                 try {
-                    Thread.sleep(2000);
+                    gh.connectBlocking();
+                    gh.send("auth:"+username.getText()+":"+String.valueOf(password.getPassword()));
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
+                    System.exit(-2);
                 }
-                errorLabel.setText("This isn't a real login dialog");
-                username.setEnabled(true);
-                password.setEnabled(true);
-                loginButton.setEnabled(true);
-                bar.setVisible(false);
             }
         }).start();
     }
