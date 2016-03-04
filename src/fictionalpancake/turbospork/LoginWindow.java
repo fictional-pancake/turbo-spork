@@ -60,7 +60,7 @@ public class LoginWindow extends JPanel implements ActionListener {
         errorLabel = new JLabel();
         errorLabel.setForeground(Color.red);
         GridBagConstraints labelConstraints = new GridBagConstraints();
-        labelConstraints.gridy = 0;
+        labelConstraints.gridy = 1;
         labelConstraints.gridwidth = 3;
 
         add(username, usernameConstraints);
