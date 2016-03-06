@@ -77,3 +77,26 @@
 	messing with the primary key.  We had an issue with
 	a race condition causing the post data to never be
 	recieved occasionally.  Hopefully it's fixed now.
+
+3/4/16:
+	The game client exists now!  It doesn't do much,
+	but it's something.  It currently just displays a
+	dialog that can accept credentials and connect to
+	the server.  I used Java-WebSocket to handle
+	connecting to the WebSocket server, as it appears
+	to be almost the only library that attempts to do
+	it.  It's a bit different than using WebSockets in
+	JavaScript in several ways.  It requires
+	subclassing the WebSocketClient class to use it,
+	instead of the JavaScript approach using event
+	handlers bound to the object.  It also doesn't
+	actually do the connection until you call a method.
+	The subclass idea was a bit of a problem for the
+	way I was planning on making the client.  My plan
+	was similar to the way I did the server, using an
+	event handler to handle the initial auth message,
+	then changing the handler to the main one.
+	Unfortunately, that's not really possible with the
+	subclass approach, so I made the subclass have a
+	listener for the first message.  It's a bit weird,
+	but it should work well.
