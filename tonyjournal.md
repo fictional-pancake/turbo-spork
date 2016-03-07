@@ -1,3 +1,22 @@
+###### 3/4/16
+This week I didn't do that much, but Colin started work on the client.
+I don't really understand how Java GUIs work. Apparently we are using
+two tools called Swing and JFrame. From my understanding, JFrame
+creates and handles windows and Swing puts content in the windows.
+It seems like a lot of work to do simple things like create the
+username and password fields. I suggested using some sort of thing
+that allows us to write the GUI in HTML and have Java use it (which
+I'm sure exists) but Colin said that would be much more difficult.
+I don't know how we are going to do the graphics for the actual game,
+because that will probably be much more complicated than creating text
+input fields. There were some weird issues when we tried to have
+multiple things listening for server input. With the library we are
+using, it seems like only one class receives data from the server. To
+get around this, we created a class that just calls the respective
+functions (onData() and such) in all of the classes we want listening
+for data. We have an ArrayList of everything that needs to listen in
+that class.
+
 ###### 2/26/16
 I'm pretty sure accounts are finished now. When we tested it there
 was an issue because the user ID field still existed, so Colin
