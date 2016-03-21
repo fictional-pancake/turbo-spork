@@ -1,3 +1,20 @@
+###### 3/11/16
+The server is actually becoming a cohesive program. The game itself isn't
+actually that complicated, so there isn't that much that still needs to be
+added. If we decided to add more special traits to nodes or something like
+spells that can be cast by players, that would make it more complex, but
+that is definitely not a priority. One thing that still needs to be
+implemented is fighting for nodes. If only one player's units are on a
+node, they own that node, but it doesn't work properly if multiple
+players have units on the node. We will want to make it so that the units
+fight and whichever force is bigger wins. I have no idea how we are going
+to make the graphics for the game. There's no way we are going to have
+graphics for the client in time for the second deliverable. We are
+probably only going to have part of the backend for it.
+
+###### 3/11/16
+I was at a robotics competition in Flagstaff this week and did nothing.
+
 ###### 3/4/16
 This week I didn't do that much, but Colin started work on the client.
 I don't really understand how Java GUIs work. Apparently we are using
