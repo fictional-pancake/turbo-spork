@@ -24,7 +24,7 @@ units to a node.
 | Date          | Deliverable    |
 | ------------- | -------------- |
 | February 26   |    A server    |
-| April 1       | Playable game  |
+| April 1       |    A client    |
 | April 29      |Polish (mobile?)|
 
 ## Reality Check
