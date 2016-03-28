@@ -1,4 +1,18 @@
-###### 3/11/16
+###### 3/25/16
+It seems like Swing is just supposed to be used for stuff like menus. I don't
+know how it is supposed to apply to moving graphics as is required for a game,
+or if we are even going to use it for the game. It seems to just have
+components like text boxes and stuff. The closest thing I've found to what
+we need by looking through some documentation is the ability to show an icon.
+Still I think that's pretty far from adequate for a game. I have no experience
+with creating a GUI in any language so I don't really know, but I thought
+for a game you are supposed to just figure out what's supposed to be on the
+screen in the next frame and draw it every few milliseconds. Maybe there's
+a framework for doing that that I don't know about. I've updated our second
+deliverable to be sufficiently vague. It is now "a client", because we are
+unlikely to have real graphics or much of a playable game.
+
+###### 3/18/16
 The server is actually becoming a cohesive program. The game itself isn't
 actually that complicated, so there isn't that much that still needs to be
 added. If we decided to add more special traits to nodes or something like
