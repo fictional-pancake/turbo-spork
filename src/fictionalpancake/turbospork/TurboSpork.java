@@ -1,8 +1,6 @@
 package fictionalpancake.turbospork;
 
 import javax.swing.*;
-import java.net.InetAddress;
-import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -27,13 +25,7 @@ public class TurboSpork {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
 

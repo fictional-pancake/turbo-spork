@@ -1,18 +1,9 @@
 package fictionalpancake.turbospork;
 
-import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketAdapter;
-import org.java_websocket.WebSocketImpl;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft_17;
-import org.java_websocket.drafts.Draft_76;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.net.Socket;
 
 public class LoginWindow extends JPanel implements ActionListener {
 
@@ -88,23 +79,19 @@ public class LoginWindow extends JPanel implements ActionListener {
         loginButton.setEnabled(false);
         bar.setVisible(true);
         new Thread(new Runnable() {
+            public GameHandler gh;
+
             @Override
             public void run() {
-                GameHandler gh = new GameHandler(new DataListener<String>() {
+                gh = new GameHandler(new DataListener<String>() {
                     @Override
                     public void onData(String data) {
                         int colonPos = data.indexOf(':');
                         String firstPart = data.substring(0, colonPos);
                         String lastPart = data.substring(colonPos + 1);
                         if(firstPart.equals("join")) {
-                            JFrame dialog = new JFrame();
-                            JLabel label = new JLabel("Welcome to the absence of a game!");
-                            dialog.add(label);
-                            dialog.setSize(250, 50);
-                            dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                            dialog.setVisible(true);
                             window.setVisible(false);
-                            System.out.println(data);
+                            GameWindow.open(gh);
                         }
                         else {
                             username.setEnabled(true);
