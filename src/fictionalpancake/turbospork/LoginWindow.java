@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.channels.NotYetConnectedException;
 
 public class LoginWindow extends JPanel implements ActionListener {
 
@@ -115,6 +116,13 @@ public class LoginWindow extends JPanel implements ActionListener {
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                     System.exit(-2);
+                } catch(NotYetConnectedException e) {
+                    errorLabel.setText("Could not connect to server.");
+                    username.setEnabled(true);
+                    password.setEnabled(true);
+                    loginButton.setEnabled(true);
+                    bar.setVisible(false);
+                    System.err.println("failed connection");
                 }
             }
         }).start();

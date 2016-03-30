@@ -14,4 +14,5 @@ public class GameConstants {
             Color.cyan,
             Color.orange
     };
+    public static final int WIN_TEXT_SIZE = 10;
 }

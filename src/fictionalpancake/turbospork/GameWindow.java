@@ -36,13 +36,14 @@ public class GameWindow extends JPanel {
             setLayout(new BorderLayout());
             userList = new JList<String>(new DefaultListModel<String>());
             add(userList, BorderLayout.CENTER);
-            joinBtn = new JButton("Join Room");
+            joinBtn = new JButton();
             add(joinBtn, BorderLayout.NORTH);
             joinBtn.addActionListener(this);
             startBtn = new JButton("Start Game");
             startBtn.setEnabled(false);
             add(startBtn, BorderLayout.SOUTH);
             startBtn.addActionListener(this);
+            updateButtonState();
         }
 
         @Override
@@ -120,6 +121,13 @@ public class GameWindow extends JPanel {
                     g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), convertSize(GameConstants.NODE_RADIUS * 2), convertSize(GameConstants.NODE_RADIUS * 2));
                 }
             }
+            else {
+                String lastWinner = gameHandler.getLastWinner();
+                if(lastWinner != null) {
+                    g.setFont(new Font("SansSerif", Font.ITALIC, convertSize(GameConstants.WIN_TEXT_SIZE)));
+                    drawStringCenter(g, lastWinner+" wins!", convertX(GameConstants.FIELD_SIZE/2), convertY(GameConstants.FIELD_SIZE/2));
+                }
+            }
         }
 
         private Color getColorForOwner(int owner) {
@@ -159,6 +167,11 @@ public class GameWindow extends JPanel {
                 minDimension = getHeight();
             }
             scale = minDimension / GameConstants.FIELD_SIZE;
+        }
+
+        private void drawStringCenter(Graphics g, String string, int centerX, int centerY) {
+            FontMetrics metrics = g.getFontMetrics();
+            g.drawString(string, centerX-metrics.stringWidth(string)/2, centerY-metrics.getHeight()/2);
         }
     }
 }

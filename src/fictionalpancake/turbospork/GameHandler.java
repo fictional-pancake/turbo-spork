@@ -18,12 +18,15 @@ public class GameHandler extends WebSocketClient {
     private String room;
     private String userID;
     private List<Node> nodes;
+    private String lastWinner;
+    private boolean opened;
 
     private JSONParser jsonParser = new JSONParser();
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
         System.out.println("opened");
+        opened = true;
     }
 
     @Override
@@ -86,6 +89,10 @@ public class GameHandler extends WebSocketClient {
                     e.printStackTrace();
                 }
                 break;
+            case "win":
+                lastWinner = data;
+                nodes = null;
+                break;
             default:
                 System.err.println("Unrecognized command");
         }
@@ -93,7 +100,9 @@ public class GameHandler extends WebSocketClient {
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        System.exit(0);
+        if(opened) {
+            System.exit(0);
+        }
     }
 
     @Override
@@ -131,5 +140,9 @@ public class GameHandler extends WebSocketClient {
 
     public List<Node> getNodes() {
         return nodes;
+    }
+
+    public String getLastWinner() {
+        return lastWinner;
     }
 }
