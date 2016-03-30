@@ -63,13 +63,27 @@ public class LoginWindow extends JPanel implements ActionListener {
         add(errorLabel, labelConstraints);
     }
 
-    public static JFrame open() {
+    public static JFrame open(String[] credentials) {
         JFrame frame = new JFrame("Login to Turbo-Spork");
-        JPanel panel = new LoginWindow(frame);
+        LoginWindow panel = new LoginWindow(frame);
         frame.add(panel);
         frame.setSize(250, 150);
+        if(credentials != null) {
+            if(credentials.length == 2) {
+                panel.username.setText(credentials[0]);
+                panel.password.setText(credentials[1]);
+                panel.actionPerformed(null);
+            }
+            else {
+                throw new IllegalArgumentException("credentials array must contain 2 values");
+            }
+        }
         frame.setVisible(true);
         return frame;
+    }
+
+    public static JFrame open() {
+        return open(null);
     }
 
     @Override

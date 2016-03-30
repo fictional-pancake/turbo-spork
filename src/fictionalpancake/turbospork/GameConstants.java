@@ -15,4 +15,5 @@ public class GameConstants {
             Color.orange
     };
     public static final int WIN_TEXT_SIZE = 10;
+    public static final double OUTLINE_SIZE = 0.5;
 }

@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.List;
 import java.util.Random;
 
@@ -99,26 +101,43 @@ public class GameWindow extends JPanel {
         }
     }
 
-    private class GameMainPanel extends JPanel {
+    private class GameMainPanel extends JPanel implements MouseMotionListener {
         private GameHandler gameHandler;
         private int xOffset;
         private int yOffset;
         private double scale;
+        private int mouseY;
+        private int mouseX;
 
         public GameMainPanel(GameHandler gameHandler) {
             this.gameHandler = gameHandler;
+            addMouseMotionListener(this);
         }
 
         @Override
-        public void paint(Graphics g) {
-            super.paint(g);
+        public void paint(Graphics graphics) {
+            super.paint(graphics);
+            Graphics2D g = ((Graphics2D) graphics);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            Stroke defaultStroke = g.getStroke();
             checkScaling();
             g.clearRect(0, 0, getWidth(), getHeight());
             if (gameHandler.isInProgress()) {
                 List<Node> nodes = gameHandler.getNodes();
+                boolean hasShownOutline = false;
                 for (Node node : nodes) {
                     g.setColor(getColorForOwner(node.getOwner()));
-                    g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), convertSize(GameConstants.NODE_RADIUS * 2), convertSize(GameConstants.NODE_RADIUS * 2));
+                    int x = convertX(node.getX() - GameConstants.NODE_RADIUS);
+                    int y = convertY(node.getY() - GameConstants.NODE_RADIUS);
+                    int d = convertSize(GameConstants.NODE_RADIUS * 2);
+                    g.fillOval(x, y, d, d);
+                    if(!hasShownOutline && isMouseOverNode(node)) {
+                        hasShownOutline = true;
+                        g.setColor(Color.darkGray);
+                        g.setStroke(new BasicStroke(convertSize(GameConstants.OUTLINE_SIZE)));
+                        g.drawOval(x, y, d, d);
+                        g.setStroke(defaultStroke);
+                    }
                 }
             } else {
                 String lastWinner = gameHandler.getLastWinner();
@@ -148,7 +167,7 @@ public class GameWindow extends JPanel {
             return (int) (yOffset + y * scale);
         }
 
-        private int convertSize(int s) {
+        private int convertSize(double s) {
             return (int) (s * scale);
         }
 
@@ -169,6 +188,21 @@ public class GameWindow extends JPanel {
         private void drawStringCenter(Graphics g, String string, int centerX, int centerY) {
             FontMetrics metrics = g.getFontMetrics();
             g.drawString(string, centerX - metrics.stringWidth(string) / 2, centerY - metrics.getHeight() / 2);
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            mouseX = e.getX();
+            mouseY = e.getY();
+        }
+
+        private boolean isMouseOverNode(Node node) {
+            return TurboSpork.distance(mouseX, mouseY, convertX(node.getX()), convertY(node.getY())) <= convertSize(GameConstants.NODE_RADIUS);
         }
     }
 }
