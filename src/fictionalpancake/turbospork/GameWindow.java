@@ -70,7 +70,7 @@ public class GameWindow extends JPanel {
         @Override
         public void onJoinedRoom(String id) {
             ((DefaultListModel<String>) userList.getModel()).addElement(id);
-            System.out.println(id+" joined");
+            System.out.println(id + " joined");
             updateButtonState();
         }
 
@@ -120,24 +120,21 @@ public class GameWindow extends JPanel {
                     g.setColor(getColorForOwner(node.getOwner()));
                     g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), convertSize(GameConstants.NODE_RADIUS * 2), convertSize(GameConstants.NODE_RADIUS * 2));
                 }
-            }
-            else {
+            } else {
                 String lastWinner = gameHandler.getLastWinner();
-                if(lastWinner != null) {
+                if (lastWinner != null) {
                     g.setFont(new Font("SansSerif", Font.ITALIC, convertSize(GameConstants.WIN_TEXT_SIZE)));
-                    drawStringCenter(g, lastWinner+" wins!", convertX(GameConstants.FIELD_SIZE/2), convertY(GameConstants.FIELD_SIZE/2));
+                    drawStringCenter(g, lastWinner + " wins!", convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.FIELD_SIZE / 2));
                 }
             }
         }
 
         private Color getColorForOwner(int owner) {
-            if(owner < 0) {
+            if (owner < 0) {
                 return Color.lightGray;
-            }
-            else if(owner < GameConstants.COLORS.length) {
+            } else if (owner < GameConstants.COLORS.length) {
                 return GameConstants.COLORS[owner];
-            }
-            else {
+            } else {
                 Random r = new Random();
                 return new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
             }
@@ -166,12 +163,12 @@ public class GameWindow extends JPanel {
                 yOffset = 0;
                 minDimension = getHeight();
             }
-            scale = minDimension / GameConstants.FIELD_SIZE;
+            scale = ((double) minDimension) / GameConstants.FIELD_SIZE;
         }
 
         private void drawStringCenter(Graphics g, String string, int centerX, int centerY) {
             FontMetrics metrics = g.getFontMetrics();
-            g.drawString(string, centerX-metrics.stringWidth(string)/2, centerY-metrics.getHeight()/2);
+            g.drawString(string, centerX - metrics.stringWidth(string) / 2, centerY - metrics.getHeight() / 2);
         }
     }
 }
