@@ -61,7 +61,7 @@ public class GameHandler extends WebSocketClient {
                 }
                 break;
             case "join":
-                if (newRoom == null && room == null) {
+                if (userID == null) {
                     userID = data;
                 } else {
                     room = newRoom;
