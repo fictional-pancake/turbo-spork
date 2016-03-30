@@ -100,3 +100,23 @@
 	subclass approach, so I made the subclass have a
 	listener for the first message.  It's a bit weird,
 	but it should work well.
+
+3/30/16:
+	It almost looks like a game now!  The client now
+	has a more useful window than just "Welcome to the
+	absence of a game", allowing joining rooms, seeing
+	the other players in the room, starting the game,
+	seeing the nodes, and winning by having everyone
+	else leave.  The node info is provided by the
+	server in JSON format, so I'm using JSON.simple to
+	parse that from Java.  I had an odd issue with
+	scaling where it jumped in scale instead of being
+	smooth, but it turned out to be just an issue with
+	using integer division where it shouldn't be.  The
+	server has been improved slightly as well to make
+	it easier to write the client and fix some other
+	issues.  It now informs the client of leaving a
+	room, sends a message when they win, and shouldn't
+	crash when you create a user.  It also no longer
+	allows you to start a game without another player
+	in the room.
