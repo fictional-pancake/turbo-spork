@@ -2,8 +2,13 @@ package fictionalpancake.turbospork;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GameHandler extends WebSocketClient {
 
@@ -12,6 +17,9 @@ public class GameHandler extends WebSocketClient {
     private String newRoom;
     private String room;
     private String userID;
+    private List<Node> nodes;
+
+    private JSONParser jsonParser = new JSONParser();
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
@@ -26,18 +34,17 @@ public class GameHandler extends WebSocketClient {
 
             // it should only be used once
             firstMessageListener = null;
-        } else {
-            int ind = s.indexOf(':');
-            String command;
-            String data = null;
-            if (ind > -1) {
-                command = s.substring(0, ind);
-                data = s.substring(ind + 1);
-            } else {
-                command = s;
-            }
-            handleMessage(command, data);
         }
+        int ind = s.indexOf(':');
+        String command;
+        String data = null;
+        if (ind > -1) {
+            command = s.substring(0, ind);
+            data = s.substring(ind + 1);
+        } else {
+            command = s;
+        }
+        handleMessage(command, data);
     }
 
     public void handleMessage(String command, String data) {
@@ -51,19 +58,36 @@ public class GameHandler extends WebSocketClient {
                 }
                 break;
             case "join":
-                if (newRoom == null) {
+                if (newRoom == null && room == null) {
                     userID = data;
                 } else {
                     room = newRoom;
                     newRoom = null;
-                }
-                if (roomInfoListener != null) {
-                    roomInfoListener.onJoinedRoom(data);
+                    if (roomInfoListener != null) {
+                        roomInfoListener.onJoinedRoom(data);
+                    }
                 }
                 break;
             case "error":
                 JOptionPane.showMessageDialog(null, data, "Error", JOptionPane.ERROR_MESSAGE);
                 break;
+            case "gamestart":
+                try {
+                    Map map = (Map) jsonParser.parse(data);
+                    List<Map> nodeInfo = (List<Map>) map.get("nodes");
+                    nodes = new ArrayList<Node>();
+                    for(Map currentNodeInfo : nodeInfo) {
+                        nodes.add(new Node(currentNodeInfo));
+                    }
+                    if(roomInfoListener != null) {
+                        roomInfoListener.onGameStart();
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                System.err.println("Unrecognized command");
         }
     }
 
@@ -95,5 +119,17 @@ public class GameHandler extends WebSocketClient {
 
     public void setRoomInfoListener(RoomInfoListener roomInfoListener) {
         this.roomInfoListener = roomInfoListener;
+    }
+
+    public void startGame() {
+        send("gamestart");
+    }
+
+    public boolean isInProgress() {
+        return nodes != null;
+    }
+
+    public List<Node> getNodes() {
+        return nodes;
     }
 }
