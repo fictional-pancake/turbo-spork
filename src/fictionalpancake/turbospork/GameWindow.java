@@ -23,6 +23,8 @@ public class GameWindow extends JPanel {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(new GameWindow(gameHandler));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setSize(Math.min(1024, screenSize.width), Math.min(768, screenSize.height));
         frame.setVisible(true);
     }
 
