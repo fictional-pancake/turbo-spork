@@ -8,7 +8,14 @@ public class RepaintThread implements Runnable {
     @Override
     public void run() {
         while(true) {
-            target.repaint();
+            if(target.isShowing()) {
+                target.repaint();
+            }
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
