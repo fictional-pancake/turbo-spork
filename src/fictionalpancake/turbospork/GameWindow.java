@@ -29,7 +29,7 @@ public class GameWindow extends JPanel {
     }
 
     private class RoomInfoPanel extends JPanel implements RoomInfoListener, ActionListener {
-        private JList<String> userList;
+        private JList userList;
         private JButton joinBtn;
         private JButton startBtn;
         private GameHandler gameHandler;
@@ -38,7 +38,7 @@ public class GameWindow extends JPanel {
             this.gameHandler = gameHandler;
             gameHandler.setRoomInfoListener(this);
             setLayout(new BorderLayout());
-            userList = new JList<String>(new DefaultListModel<String>());
+            userList = new JList(new DefaultListModel());
             add(userList, BorderLayout.CENTER);
             joinBtn = new JButton();
             add(joinBtn, BorderLayout.NORTH);
@@ -73,7 +73,7 @@ public class GameWindow extends JPanel {
 
         @Override
         public void onJoinedRoom(String id) {
-            ((DefaultListModel<String>) userList.getModel()).addElement(id);
+            ((DefaultListModel) userList.getModel()).addElement(id);
             System.out.println(id + " joined");
             updateButtonState();
         }
@@ -89,12 +89,12 @@ public class GameWindow extends JPanel {
         }
 
         private void updateButtonState() {
-            DefaultListModel<String> listModel = ((DefaultListModel<String>) userList.getModel());
+            DefaultListModel listModel = ((DefaultListModel) userList.getModel());
             if (listModel.isEmpty()) {
                 joinBtn.setText("Join Room");
             } else {
                 joinBtn.setText("Switch Room");
-                String leader = listModel.getElementAt(0);
+                String leader = (String) listModel.getElementAt(0);
                 String userID = gameHandler.getUserID();
                 System.out.println("Leader is " + leader);
                 System.out.println("You are " + userID);
