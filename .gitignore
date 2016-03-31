@@ -1,4 +1,4 @@
 .idea/
-turbo-spork.iml
+*.iml
 out
 build

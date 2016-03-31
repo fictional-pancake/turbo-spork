@@ -1,7 +1,13 @@
 <project name="turbo-spork" default="jar" basedir=".">
 	<property name="src" location="src"/>
 	<property name="classes" location="build/classes"/>
+	<property name="testClasses" location="build/test/classes"/>
 	<property name="dist" location="build/dist"/>
+	<path id="testPath">
+		<fileset dir="lib" includes="*.jar" />
+		<fileset dir="test/lib" includes="*.jar" />
+		<pathelement path="${classes}" />
+	</path>
 
 	<target name="compile">
 		<mkdir dir="${classes}" />
@@ -16,5 +22,22 @@
 		<jar jarfile="${dist}/turbo-spork.jar" basedir="${classes}" manifest="MANIFEST.MF">
 			<zipgroupfileset dir="lib" includes="*.jar" />
 		</jar>
+	</target>
+	<target name="compileTest" depends="compile">
+		<mkdir dir="${testClasses}" />
+		<javac srcdir="test/src" destdir="${testClasses}">
+			<classpath refid="testPath" />
+		</javac>
+	</target>
+	<target name="test" depends="compileTest">
+		<junit printsummary="yes">
+			<classpath refid="testPath" />
+			<classpath>
+				<pathelement path="${testClasses}" />
+			</classpath>
+			<batchtest>
+				<fileset dir="test/src" includes="*Test.java" />
+			</batchtest>
+		</junit>
 	</target>
 </project>
