@@ -29,7 +29,7 @@ public class GameWindow extends JPanel {
     }
 
     private class RoomInfoPanel extends JPanel implements RoomInfoListener, ActionListener {
-        private JList userList;
+        private JList<String> userList;
         private JButton joinBtn;
         private JButton startBtn;
         private GameHandler gameHandler;
@@ -38,7 +38,7 @@ public class GameWindow extends JPanel {
             this.gameHandler = gameHandler;
             gameHandler.setRoomInfoListener(this);
             setLayout(new BorderLayout());
-            userList = new JList(new DefaultListModel());
+            userList = new JList<String>(new DefaultListModel<String>());
             add(userList, BorderLayout.CENTER);
             joinBtn = new JButton();
             add(joinBtn, BorderLayout.NORTH);
@@ -64,16 +64,16 @@ public class GameWindow extends JPanel {
         @Override
         public void onLeftRoom(String id) {
             if (id.equals(gameHandler.getUserID())) {
-                ((DefaultListModel) userList.getModel()).removeAllElements();
+                ((DefaultListModel<String>) userList.getModel()).removeAllElements();
             } else {
-                ((DefaultListModel) userList.getModel()).removeElement(id);
+                ((DefaultListModel<String>) userList.getModel()).removeElement(id);
             }
             updateButtonState();
         }
 
         @Override
         public void onJoinedRoom(String id) {
-            ((DefaultListModel) userList.getModel()).addElement(id);
+            ((DefaultListModel<String>) userList.getModel()).addElement(id);
             System.out.println(id + " joined");
             updateButtonState();
         }
@@ -89,12 +89,12 @@ public class GameWindow extends JPanel {
         }
 
         private void updateButtonState() {
-            DefaultListModel listModel = ((DefaultListModel) userList.getModel());
+            DefaultListModel<String> listModel = ((DefaultListModel<String>) userList.getModel());
             if (listModel.isEmpty()) {
                 joinBtn.setText("Join Room");
             } else {
                 joinBtn.setText("Switch Room");
-                String leader = (String) listModel.getElementAt(0);
+                String leader = listModel.getElementAt(0);
                 String userID = gameHandler.getUserID();
                 System.out.println("Leader is " + leader);
                 System.out.println("You are " + userID);
