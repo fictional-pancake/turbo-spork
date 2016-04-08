@@ -127,18 +127,38 @@ public class GameWindow extends JPanel {
             if (gameHandler.isInProgress()) {
                 List<Node> nodes = gameHandler.getNodes();
                 boolean hasShownOutline = false;
-                for (Node node : nodes) {
+                Node node;
+                for (int i = 0; i < nodes.size(); i++) {
+                    node = nodes.get(i);
                     g.setColor(getColorForOwner(node.getOwner()));
                     int x = convertX(node.getX() - GameConstants.NODE_RADIUS);
                     int y = convertY(node.getY() - GameConstants.NODE_RADIUS);
                     int d = convertSize(GameConstants.NODE_RADIUS * 2);
                     g.fillOval(x, y, d, d);
-                    if(!hasShownOutline && isMouseOverNode(node)) {
+                    if (!hasShownOutline && isMouseOverNode(node)) {
                         hasShownOutline = true;
                         g.setColor(Color.darkGray);
                         g.setStroke(new BasicStroke(convertSize(GameConstants.OUTLINE_SIZE)));
                         g.drawOval(x, y, d, d);
                         g.setStroke(defaultStroke);
+                    }
+                    int numUnits = node.getUnits();
+                    Random rand = new Random(i);
+                    double angle;
+                    double distance;
+                    int unitX;
+                    int unitY;
+                    int diameter = convertSize(GameConstants.UNIT_RADIUS * 2);
+                    for (int j = 0; j < numUnits; j++) {
+                        // generate a random angle and distance for the node to be at
+                        angle = rand.nextDouble() * 2 * Math.PI;
+                        distance = rand.nextDouble() * GameConstants.UNIT_MAX_DISTANCE * GameConstants.NODE_RADIUS;
+                        // convert those to X and Y coordinates
+                        unitX = convertX(distance * Math.cos(angle) + node.getX());
+                        unitY = convertY(distance * Math.sin(angle) + node.getY());
+                        // draw the node
+                        g.setColor(Color.black);
+                        g.fillOval(unitX, unitY, diameter, diameter);
                     }
                 }
             } else {
@@ -161,11 +181,11 @@ public class GameWindow extends JPanel {
             }
         }
 
-        private int convertX(int x) {
+        private int convertX(double x) {
             return (int) (xOffset + x * scale);
         }
 
-        private int convertY(int y) {
+        private int convertY(double y) {
             return (int) (yOffset + y * scale);
         }
 
