@@ -9,6 +9,7 @@ public class UnitGroup {
     private int duration;
     private long start;
     private int units;
+    private int owner;
 
     private double xVel;
     private double yVel;
@@ -19,6 +20,7 @@ public class UnitGroup {
         dest = nodes.get((int) ((long) map.get("dest")));
         duration = (int) ((long) map.get("duration"));
         units = (int) ((long) map.get("size"));
+        owner = (int) ((long) map.get("owner"));
         start = System.currentTimeMillis();
 
         xVel = ((double)(dest.getX()-source.getX()))/duration;
@@ -68,5 +70,9 @@ public class UnitGroup {
 
     public void takeUnits(int i) {
         units -= i;
+    }
+
+    public int getOwner() {
+        return owner;
     }
 }

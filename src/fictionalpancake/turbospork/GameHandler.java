@@ -30,6 +30,20 @@ public class GameHandler extends WebSocketClient {
         super(TurboSpork.getServerURI());
         this.firstMessageListener = firstMessageListener;
         users = new ArrayList<String>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    send("keepalive");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -134,7 +148,7 @@ public class GameHandler extends WebSocketClient {
                     node.takeUnits(1);
                 } else {
                     for (UnitGroup group : groups) {
-                        if (group.getSource().getOwner() == owner) {
+                        if (group.getOwner() == owner) {
                             group.takeUnits(1);
                             break;
                         }

@@ -156,11 +156,14 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
 
     @Override
     public void mousePressed(MouseEvent e) {
+        Node underMouse = getNodeUnderMouse();
         if(selectedNode == null) {
-            Node underMouse = getNodeUnderMouse();
             if (underMouse != null && underMouse.getOwner() == gameHandler.getPosition()) {
                 selectedNode = underMouse;
             }
+        }
+        else if(selectedNode == underMouse) {
+            selectedNode = null;
         }
     }
 
