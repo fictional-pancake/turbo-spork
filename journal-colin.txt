@@ -120,3 +120,23 @@
 	crash when you create a user.  It also no longer
 	allows you to start a game without another player
 	in the room.
+
+4/9/16:
+	The game works!  You can play!  You can now send
+	units, see units, and destroy units.  You can
+	capture nodes and win.  I found lots of issues
+	with the server code that I hadn't noticed before
+	because they didn't matter, including placing
+	nodes horribly, never destroying unit groups, and
+	some others I forgot about.  I also wrote a few
+	unit tests because that's always nice.  It also
+	means we get a nice "build passing" badge in our
+	README from Travis CI.  Eventually we might get
+	it to automatically deploy when we make a new
+	release.  Eventually we'll need to change the
+	connection handshake to ensure protocol versions
+	match, but I haven't done that yet.  For testing,
+	I wrote a small script to connect to the server
+	and join a room so I can start a game without
+	running the whole client twice, since my computer
+	is really bad at that.
