@@ -7,6 +7,7 @@ import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,16 @@ public class GameHandler extends WebSocketClient {
     private List<Node> nodes;
     private String lastWinner;
     private boolean opened;
+    private List<UnitGroup> groups;
+    private List<String> users;
 
     private JSONParser jsonParser = new JSONParser();
+
+    public GameHandler(DataListener<String> firstMessageListener) {
+        super(TurboSpork.getServerURI());
+        this.firstMessageListener = firstMessageListener;
+        users = new ArrayList<String>();
+    }
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
@@ -51,10 +60,15 @@ public class GameHandler extends WebSocketClient {
     }
 
     public void handleMessage(String command, String data) {
+        String[] spl = data.split(",");
         switch (command) {
             case "leave":
                 if (data.equals(userID)) {
                     room = null;
+                    users.clear();
+                    reset();
+                } else {
+                    users.remove(data);
                 }
                 if (roomInfoListener != null) {
                     roomInfoListener.onLeftRoom(data);
@@ -64,8 +78,11 @@ public class GameHandler extends WebSocketClient {
                 if (userID == null) {
                     userID = data;
                 } else {
-                    room = newRoom;
-                    newRoom = null;
+                    if (newRoom != null) {
+                        room = newRoom;
+                        newRoom = null;
+                    }
+                    users.add(data);
                     if (roomInfoListener != null) {
                         roomInfoListener.onJoinedRoom(data);
                     }
@@ -79,28 +96,63 @@ public class GameHandler extends WebSocketClient {
                     Map map = (Map) jsonParser.parse(data);
                     List<Map> nodeInfo = (List<Map>) map.get("nodes");
                     nodes = new ArrayList<Node>();
-                    for(Map currentNodeInfo : nodeInfo) {
+                    groups = new ArrayList<UnitGroup>();
+                    for (Map currentNodeInfo : nodeInfo) {
                         nodes.add(new Node(currentNodeInfo));
                     }
-                    if(roomInfoListener != null) {
+                    if (roomInfoListener != null) {
                         roomInfoListener.onGameStart();
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 break;
+            case "send":
+                try {
+                    Map map = (Map) jsonParser.parse(data);
+                    groups.add(new UnitGroup(map, this));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                break;
             case "win":
                 lastWinner = data;
-                nodes = null;
+                reset();
+                if(roomInfoListener != null) {
+                    roomInfoListener.onGameEnd();
+                }
+                break;
+            case "update":
+                getNodes().get(Integer.parseInt(spl[0])).updateProp(spl[1], spl[2]);
+                break;
+            case "death":
+                Node node = getNodes().get(Integer.parseInt(spl[0]));
+                int owner = Integer.parseInt(spl[1]);
+                if (node.getOwner() == owner) {
+                    node.takeUnits(1);
+                } else {
+                    for (UnitGroup group : groups) {
+                        if (group.getSource().getOwner() == owner) {
+                            group.takeUnits(1);
+                            break;
+                        }
+                    }
+                }
                 break;
             default:
                 System.err.println("Unrecognized command");
         }
     }
 
+    private void reset() {
+        nodes = null;
+        groups = null;
+    }
+
     @Override
     public void onClose(int i, String s, boolean b) {
-        if(opened) {
+        if (opened) {
+            System.err.println("dying");
             System.exit(0);
         }
     }
@@ -108,11 +160,6 @@ public class GameHandler extends WebSocketClient {
     @Override
     public void onError(Exception e) {
         e.printStackTrace();
-    }
-
-    public GameHandler(DataListener<String> firstMessageListener) {
-        super(TurboSpork.getServerURI());
-        this.firstMessageListener = firstMessageListener;
     }
 
     public void openJoinDialog() {
@@ -139,10 +186,41 @@ public class GameHandler extends WebSocketClient {
     }
 
     public List<Node> getNodes() {
+        if (groups != null) {
+            Iterator<UnitGroup> it = groups.iterator();
+            while (it.hasNext()) {
+                UnitGroup group = it.next();
+                if ((group.isComplete() && (group.getDest().getOwner() == group.getSource().getOwner() || group.getDest().getOwner() == -1) || group.getUnits() < 1)) {
+                    it.remove();
+                    group.getDest().addUnits(group.getUnits());
+                    System.out.println("group dying");
+                }
+            }
+        }
         return nodes;
     }
 
     public String getLastWinner() {
         return lastWinner;
+    }
+
+    public int getPosition() {
+        return users.indexOf(userID);
+    }
+
+    public void attack(Node target, Node with) {
+        int units = with.takeUnits();
+        send("attack:" + indexOf(with) + "," + indexOf(target));
+    }
+
+    public int indexOf(Node node) {
+        if(nodes == null) {
+            return -1;
+        }
+        return getNodes().indexOf(node);
+    }
+
+    public List<UnitGroup> getUnitGroups() {
+        return groups;
     }
 }

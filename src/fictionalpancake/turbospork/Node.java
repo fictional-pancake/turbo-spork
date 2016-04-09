@@ -37,10 +37,15 @@ public class Node {
     }
 
     public int getUnits() {
+        if(getOwner() == -1) {
+            return 0;
+        }
         synchronized(this) {
             while (lastUnitCheck + getGenerationTime() <= System.currentTimeMillis()) {
                 lastUnitCheck += getGenerationTime();
-                lastUnits++;
+                if(lastUnits < getUnitCap()) {
+                    lastUnits++;
+                }
             }
             return lastUnits;
         }
@@ -54,5 +59,28 @@ public class Node {
         unitCap = (int) ((long) map.get("unitCap"));
         unitSpeed = (double) map.get("unitSpeed");
         lastUnitCheck = System.currentTimeMillis();
+    }
+
+    public int takeUnits() {
+        return takeUnits(getUnits());
+    }
+
+    public void addUnits(int units) {
+        lastUnits += units;
+    }
+
+    public void updateProp(String key, String value) {
+        switch(key) {
+            case "owner":
+                owner = Integer.parseInt(value);
+                break;
+            default:
+                System.err.println("Unknown property: "+key);
+        }
+    }
+
+    public int takeUnits(int i) {
+        lastUnits -= i;
+        return i;
     }
 }
