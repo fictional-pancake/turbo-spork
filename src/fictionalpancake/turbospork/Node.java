@@ -1,5 +1,6 @@
 package fictionalpancake.turbospork;
 
+import java.util.List;
 import java.util.Map;
 
 public class Node {
@@ -32,18 +33,28 @@ public class Node {
         return owner;
     }
 
-    public int getGenerationTime() {
-        return generationTime;
+    public int getGenerationTime(GameHandler gh) {
+        int tr = generationTime;
+        List<UnitGroup> groups = gh.getUnitGroups();
+        if(groups != null) {
+            for(UnitGroup group : groups) {
+                if(group.getDest() == this && group.isComplete()) {
+                    tr *= 2;
+                    break;
+                }
+            }
+        }
+        return tr;
     }
 
-    public int getUnits() {
+    public int getUnits(GameHandler gh) {
         if(getOwner() == -1) {
             lastUnitCheck = System.currentTimeMillis();
             return 0;
         }
         synchronized(this) {
-            while (lastUnitCheck + getGenerationTime() <= System.currentTimeMillis()) {
-                lastUnitCheck += getGenerationTime();
+            while (lastUnitCheck + getGenerationTime(gh) <= System.currentTimeMillis()) {
+                lastUnitCheck += getGenerationTime(gh);
                 if(lastUnits < getUnitCap()) {
                     lastUnits++;
                 }
@@ -60,10 +71,6 @@ public class Node {
         unitCap = (int) ((long) map.get("unitCap"));
         unitSpeed = (double) map.get("unitSpeed");
         lastUnitCheck = System.currentTimeMillis();
-    }
-
-    public int takeUnits() {
-        return takeUnits(getUnits());
     }
 
     public void addUnits(int units) {

@@ -132,7 +132,7 @@ public class GameWindow extends JPanel {
                     node = nodes.get(i);
                     g.setColor(getColorForOwner(node.getOwner()));
                     g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), d, d);
-                    drawUnitGroup(g, i, node.getOwner(), node.getUnits(), node.getX(), node.getY());
+                    drawUnitGroup(g, i, node.getOwner(), node.getUnits(gameHandler), node.getX(), node.getY());
                 }
                 g.setStroke(outlineStroke);
                 Node underMouse = getNodeUnderMouse();
