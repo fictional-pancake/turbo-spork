@@ -38,6 +38,7 @@ public class Node {
 
     public int getUnits() {
         if(getOwner() == -1) {
+            lastUnitCheck = System.currentTimeMillis();
             return 0;
         }
         synchronized(this) {

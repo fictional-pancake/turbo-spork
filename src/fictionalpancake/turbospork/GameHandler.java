@@ -110,7 +110,9 @@ public class GameHandler extends WebSocketClient {
             case "send":
                 try {
                     Map map = (Map) jsonParser.parse(data);
-                    groups.add(new UnitGroup(map, this));
+                    UnitGroup newGroup = new UnitGroup(map, this);
+                    groups.add(newGroup);
+                    newGroup.getSource().takeUnits(newGroup.getUnits());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -209,7 +211,6 @@ public class GameHandler extends WebSocketClient {
     }
 
     public void attack(Node target, Node with) {
-        int units = with.takeUnits();
         send("attack:" + indexOf(with) + "," + indexOf(target));
     }
 
