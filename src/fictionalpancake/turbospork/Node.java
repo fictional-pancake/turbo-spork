@@ -35,16 +35,22 @@ public class Node {
 
     public int getGenerationTime(GameHandler gh) {
         int tr = generationTime;
-        List<UnitGroup> groups = gh.getUnitGroups();
-        if(groups != null) {
-            for(UnitGroup group : groups) {
-                if(group.getDest() == this && group.isComplete()) {
-                    tr *= 2;
-                    break;
+        if(gh != null) {
+            List<UnitGroup> groups = gh.getUnitGroups();
+            if (groups != null) {
+                for (UnitGroup group : groups) {
+                    if (group.getDest() == this && group.isComplete()) {
+                        tr *= 2;
+                        break;
+                    }
                 }
             }
         }
         return tr;
+    }
+
+    public int getGenerationTime() {
+        return getGenerationTime(null);
     }
 
     public int getUnits(GameHandler gh) {
