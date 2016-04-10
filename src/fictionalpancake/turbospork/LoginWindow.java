@@ -126,7 +126,7 @@ public class LoginWindow extends JPanel implements ActionListener {
                 });
                 try {
                     gh.connectBlocking();
-                    gh.send("auth:"+username.getText()+":"+String.valueOf(password.getPassword()));
+                    gh.send("auth:"+username.getText()+":"+String.valueOf(password.getPassword())+":"+GameConstants.PROTOCOL_VERSION);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                     System.exit(-2);
