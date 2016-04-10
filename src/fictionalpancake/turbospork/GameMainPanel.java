@@ -54,7 +54,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
             g.setStroke(defaultStroke);
             for(UnitGroup group : groups) {
                 Node src = group.getSource();
-                drawUnitGroup(g, gameHandler.indexOf(src), src.getOwner(), group.getUnits(), group.getX(), group.getY());
+                drawUnitGroup(g, gameHandler.indexOf(src), group.getOwner(), group.getUnits(), group.getX(), group.getY());
             }
         } else {
             String lastWinner = gameHandler.getLastWinner();
