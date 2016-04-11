@@ -1,3 +1,17 @@
+###### 4/8/16
+This week the game became playable, although it isn't really fun and kind
+of sucks. It is now possible to move units between nodes as well as attack.
+I think we need to make it so that if you attack an enemy node, you can call
+your units off in the middle of the attack. Right now the game is too easily
+decided by one huge battle in which one side loses all of their units. There
+may also be some issues with the way nodes are layed out, because many
+configurations favor one side over the other. We might end up having it
+randomly choose from 10 or so configurations we've made that are balanced.
+We'll also need to start giving nodes unique characteristics to make the game
+more interesting. I'm not sure how much I care about improving graphics, but
+if we decide to we might want to give things some sort of texture and make
+units look better or move around the node they are at.
+
 ###### 4/1/16
 I learned that it is possible to draw graphics using a component called a
 JPanel, which is what are using for the graphics in our game. Right now
