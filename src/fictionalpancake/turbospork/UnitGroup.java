@@ -51,10 +51,6 @@ public class UnitGroup {
         return dest;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
     public Node getSource() {
         return source;
     }
@@ -74,5 +70,9 @@ public class UnitGroup {
 
     public int getOwner() {
         return owner;
+    }
+
+    public double getProgress() {
+        return Math.min(1, (System.currentTimeMillis()-start)/((double)duration));
     }
 }

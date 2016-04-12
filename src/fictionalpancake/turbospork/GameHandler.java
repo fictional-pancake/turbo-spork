@@ -206,7 +206,7 @@ public class GameHandler extends WebSocketClient {
             Iterator<UnitGroup> it = groups.iterator();
             while (it.hasNext()) {
                 UnitGroup group = it.next();
-                if ((group.isComplete() && (group.getDest().getOwner() == group.getSource().getOwner() || group.getDest().getOwner() == -1) || group.getUnits() < 1)) {
+                if ((group.isComplete() && (group.getDest().getOwner() == group.getSource().getOwner()) || group.getUnits() < 1)) {
                     it.remove();
                     group.getDest().addUnits(group.getUnits());
                     System.out.println("group dying");
