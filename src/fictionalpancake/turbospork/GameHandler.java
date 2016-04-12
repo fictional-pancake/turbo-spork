@@ -6,10 +6,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameHandler extends WebSocketClient {
 
@@ -23,6 +20,7 @@ public class GameHandler extends WebSocketClient {
     private boolean opened;
     private List<UnitGroup> groups;
     private List<String> users;
+    private List<Integer> removed;
 
     private JSONParser jsonParser = new JSONParser();
 
@@ -82,6 +80,9 @@ public class GameHandler extends WebSocketClient {
                     users.clear();
                     reset();
                 } else {
+                    if(isInProgress()) {
+                        removed.add(users.indexOf(data));
+                    }
                     users.remove(data);
                 }
                 if (roomInfoListener != null) {
@@ -103,7 +104,9 @@ public class GameHandler extends WebSocketClient {
                 }
                 break;
             case "error":
-                JOptionPane.showMessageDialog(null, data, "Error", JOptionPane.ERROR_MESSAGE);
+                if(userID != null) {
+                    JOptionPane.showMessageDialog(null, data, "Error", JOptionPane.ERROR_MESSAGE);
+                }
                 break;
             case "gamestart":
                 try {
@@ -111,6 +114,7 @@ public class GameHandler extends WebSocketClient {
                     List<Map> nodeInfo = (List<Map>) map.get("nodes");
                     nodes = new ArrayList<Node>();
                     groups = new ArrayList<UnitGroup>();
+                    removed = new ArrayList<Integer>();
                     for (Map currentNodeInfo : nodeInfo) {
                         nodes.add(new Node(currentNodeInfo));
                     }
@@ -163,11 +167,12 @@ public class GameHandler extends WebSocketClient {
     private void reset() {
         nodes = null;
         groups = null;
+        removed = null;
     }
 
     @Override
     public void onClose(int i, String s, boolean b) {
-        if (opened) {
+        if (opened && userID != null) {
             System.err.println("dying");
             System.exit(0);
         }
@@ -221,7 +226,18 @@ public class GameHandler extends WebSocketClient {
     }
 
     public int getPosition() {
-        return users.indexOf(userID);
+        return adjustForRemoved(users.indexOf(userID));
+    }
+
+    private int adjustForRemoved(int i) {
+        int tr = i;
+        Collections.sort(removed);
+        for(int j : removed) {
+            if(j <= tr) {
+                tr--;
+            }
+        }
+        return tr;
     }
 
     public void attack(Node target, Node with) {
