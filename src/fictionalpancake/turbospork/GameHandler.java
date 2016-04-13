@@ -6,6 +6,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
+import java.net.URI;
 import java.util.*;
 
 public class GameHandler extends WebSocketClient {
@@ -24,8 +25,8 @@ public class GameHandler extends WebSocketClient {
 
     private JSONParser jsonParser = new JSONParser();
 
-    public GameHandler(DataListener<String> firstMessageListener) {
-        super(TurboSpork.getServerURI());
+    public GameHandler(DataListener<String> firstMessageListener, URI uri) {
+        super(uri);
         this.firstMessageListener = firstMessageListener;
         users = new ArrayList<String>();
 
@@ -33,7 +34,9 @@ public class GameHandler extends WebSocketClient {
             @Override
             public void run() {
                 while(true) {
-                    send("keepalive");
+                    if(userID != null) {
+                        send("keepalive");
+                    }
                     try {
                         Thread.sleep(5000);
                     } catch (InterruptedException e) {
