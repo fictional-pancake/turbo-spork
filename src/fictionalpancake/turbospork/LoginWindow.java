@@ -79,17 +79,16 @@ public class LoginWindow extends JPanel implements ActionListener {
         LoginWindow panel = new LoginWindow(frame);
         frame.add(panel);
         frame.setSize(250, 150);
-        if(credentials != null) {
-            if(credentials.length == 2) {
+        if (credentials != null) {
+            if (credentials.length == 2) {
                 panel.username.setText(credentials[0]);
                 panel.password.setText(credentials[1]);
                 panel.actionPerformed(null);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("credentials array must contain 2 values");
             }
         }
-        if(uri != null) {
+        if (uri != null) {
             panel.uriBox.setSelectedItem(uri);
         }
         frame.setVisible(true);
@@ -110,7 +109,7 @@ public class LoginWindow extends JPanel implements ActionListener {
             public void run() {
                 URI uri = null;
                 try {
-                    uri = new URI("ws://"+uriBox.getSelectedItem());
+                    uri = new URI("ws://" + uriBox.getSelectedItem());
                 } catch (URISyntaxException e1) {
                     e1.printStackTrace();
                 }
@@ -121,19 +120,17 @@ public class LoginWindow extends JPanel implements ActionListener {
                         int colonPos = data.indexOf(':');
                         String firstPart = data.substring(0, colonPos);
                         String lastPart = data.substring(colonPos + 1);
-                        if(firstPart.equals("join")) {
+                        if (firstPart.equals("join")) {
                             window.setVisible(false);
                             GameWindow.open(gh);
-                        }
-                        else {
+                        } else {
                             username.setEnabled(true);
                             password.setEnabled(true);
                             loginButton.setEnabled(true);
                             bar.setVisible(false);
-                            if(firstPart.equals("error")) {
+                            if (firstPart.equals("error")) {
                                 errorLabel.setText(lastPart);
-                            }
-                            else {
+                            } else {
                                 errorLabel.setText("Unable to parse server response.");
                                 System.err.println("Unable to parse response:");
                                 System.err.println(data);
@@ -143,11 +140,11 @@ public class LoginWindow extends JPanel implements ActionListener {
                 }, uri);
                 try {
                     gh.connectBlocking();
-                    gh.send("auth:"+username.getText()+":"+String.valueOf(password.getPassword())+":"+GameConstants.PROTOCOL_VERSION);
+                    gh.send("auth:" + username.getText() + ":" + String.valueOf(password.getPassword()) + ":" + GameConstants.PROTOCOL_VERSION);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                     System.exit(-2);
-                } catch(NotYetConnectedException e) {
+                } catch (NotYetConnectedException e) {
                     errorLabel.setText("Could not connect to server.");
                     username.setEnabled(true);
                     password.setEnabled(true);

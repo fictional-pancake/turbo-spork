@@ -35,11 +35,11 @@ public class Node {
 
     public int getGenerationTime(GameHandler gh) {
         int tr = generationTime;
-        if(gh != null) {
+        if (gh != null) {
             List<UnitGroup> groups = gh.getUnitGroups();
             if (groups != null) {
                 for (UnitGroup group : groups) {
-                    if (group.getDest() == this && group.isComplete()) {
+                    if (group.getDest() == this && group.isComplete() && group.getUnits() > 0 && group.getOwner() != getOwner()) {
                         tr *= 2;
                         break;
                     }
@@ -54,14 +54,14 @@ public class Node {
     }
 
     public int getUnits(GameHandler gh) {
-        if(getOwner() == -1) {
+        if (getOwner() == -1) {
             lastUnitCheck = System.currentTimeMillis();
             return 0;
         }
-        synchronized(this) {
+        synchronized (this) {
             while (lastUnitCheck + getGenerationTime(gh) <= System.currentTimeMillis()) {
                 lastUnitCheck += getGenerationTime(gh);
-                if(lastUnits < getUnitCap()) {
+                if (lastUnits < getUnitCap()) {
                     lastUnits++;
                 }
             }
@@ -84,17 +84,23 @@ public class Node {
     }
 
     public void updateProp(String key, String value) {
-        switch(key) {
+        switch (key) {
             case "owner":
                 owner = Integer.parseInt(value);
                 break;
             default:
-                System.err.println("Unknown property: "+key);
+                System.err.println("Unknown property: " + key);
         }
     }
 
-    public int takeUnits(int i) {
-        lastUnits -= i;
-        return i;
+    public int takeUnits(int i, GameHandler gameHandler) {
+        int cu = getUnits(gameHandler);
+        if (i > cu) {
+            lastUnits -= cu;
+            return cu;
+        } else {
+            lastUnits -= i;
+            return i;
+        }
     }
 }

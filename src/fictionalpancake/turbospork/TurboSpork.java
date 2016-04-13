@@ -2,8 +2,6 @@ package fictionalpancake.turbospork;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Random;
 
 public class TurboSpork {
@@ -26,11 +24,10 @@ public class TurboSpork {
         }
 
         String[] credentials = null;
-        if(args.length == 2) {
+        if (args.length == 2) {
             credentials = new String[]{args[1]};
-        }
-        else if(args.length > 2) {
-            credentials = new String[]{args[1],args[2]};
+        } else if (args.length > 2) {
+            credentials = new String[]{args[1], args[2]};
         }
 
         JFrame login = LoginWindow.open(credentials, uri);

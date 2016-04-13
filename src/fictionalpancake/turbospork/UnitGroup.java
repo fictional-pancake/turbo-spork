@@ -23,27 +23,25 @@ public class UnitGroup {
         owner = (int) ((long) map.get("owner"));
         start = System.currentTimeMillis();
 
-        xVel = ((double)(dest.getX()-source.getX()))/duration;
-        yVel = ((double)(dest.getY()-source.getY()))/duration;
+        xVel = ((double) (dest.getX() - source.getX())) / duration;
+        yVel = ((double) (dest.getY() - source.getY())) / duration;
     }
 
     public double getX() {
         long time = System.currentTimeMillis() - start;
-        if(time >= duration) {
+        if (time >= duration) {
             return dest.getX();
-        }
-        else {
-            return source.getX()+xVel*time;
+        } else {
+            return source.getX() + xVel * time;
         }
     }
 
     public double getY() {
         long time = System.currentTimeMillis() - start;
-        if(time >= duration) {
+        if (time >= duration) {
             return dest.getY();
-        }
-        else {
-            return source.getY()+yVel*time;
+        } else {
+            return source.getY() + yVel * time;
         }
     }
 
@@ -64,8 +62,15 @@ public class UnitGroup {
         return time >= duration;
     }
 
-    public void takeUnits(int i) {
-        units -= i;
+    public int takeUnits(int i) {
+        if (i > units) {
+            int tr = units;
+            units = 0;
+            return tr;
+        } else {
+            units -= i;
+            return i;
+        }
     }
 
     public int getOwner() {
@@ -73,6 +78,6 @@ public class UnitGroup {
     }
 
     public double getProgress() {
-        return Math.min(1, (System.currentTimeMillis()-start)/((double)duration));
+        return Math.min(1, (System.currentTimeMillis() - start) / ((double) duration));
     }
 }

@@ -16,7 +16,7 @@ public class NodeTest {
         long generationTime = new Random().nextInt(10000);
         long unitCap = new Random().nextInt(1000);
         double unitSpeed = new Random().nextDouble();
-        Map<String,Object> map = new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("x", x);
         map.put("y", y);
         map.put("owner", owner);

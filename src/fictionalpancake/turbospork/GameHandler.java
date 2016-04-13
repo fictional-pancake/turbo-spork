@@ -33,8 +33,8 @@ public class GameHandler extends WebSocketClient {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
-                    if(userID != null) {
+                while (true) {
+                    if (userID != null) {
                         send("keepalive");
                     }
                     try {
@@ -83,7 +83,7 @@ public class GameHandler extends WebSocketClient {
                     users.clear();
                     reset();
                 } else {
-                    if(isInProgress()) {
+                    if (isInProgress()) {
                         removed.add(users.indexOf(data));
                     }
                     users.remove(data);
@@ -107,7 +107,7 @@ public class GameHandler extends WebSocketClient {
                 }
                 break;
             case "error":
-                if(userID != null) {
+                if (userID != null) {
                     JOptionPane.showMessageDialog(null, data, "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
@@ -133,7 +133,20 @@ public class GameHandler extends WebSocketClient {
                     Map map = (Map) jsonParser.parse(data);
                     UnitGroup newGroup = new UnitGroup(map, this);
                     groups.add(newGroup);
-                    newGroup.getSource().takeUnits(newGroup.getUnits());
+                    int taken = 0;
+                    int toTake = newGroup.getUnits();
+                    if (newGroup.getOwner() == newGroup.getSource().getOwner()) {
+                        taken += newGroup.getSource().takeUnits(toTake, this);
+                    }
+                    for (int i = 0; i < groups.size() && taken < toTake; i++) {
+                        UnitGroup group = groups.get(i);
+                        if (group.getDest() == newGroup.getSource() && group.getOwner() == newGroup.getOwner()) {
+                            taken += group.takeUnits(toTake - taken);
+                        }
+                    }
+                    if (taken < toTake) {
+                        System.out.println("Warning: only took " + taken + "/" + toTake);
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -141,7 +154,7 @@ public class GameHandler extends WebSocketClient {
             case "win":
                 lastWinner = data;
                 reset();
-                if(roomInfoListener != null) {
+                if (roomInfoListener != null) {
                     roomInfoListener.onGameEnd();
                 }
                 break;
@@ -152,7 +165,7 @@ public class GameHandler extends WebSocketClient {
                 Node node = getNodes().get(Integer.parseInt(spl[0]));
                 int owner = Integer.parseInt(spl[1]);
                 if (node.getOwner() == owner) {
-                    node.takeUnits(1);
+                    node.takeUnits(1, this);
                 } else {
                     for (UnitGroup group : groups) {
                         if (group.getOwner() == owner) {
@@ -235,8 +248,8 @@ public class GameHandler extends WebSocketClient {
     private int adjustForRemoved(int i) {
         int tr = i;
         Collections.sort(removed);
-        for(int j : removed) {
-            if(j <= tr) {
+        for (int j : removed) {
+            if (j <= tr) {
                 tr--;
             }
         }
@@ -248,7 +261,7 @@ public class GameHandler extends WebSocketClient {
     }
 
     public int indexOf(Node node) {
-        if(nodes == null) {
+        if (nodes == null) {
             return -1;
         }
         return getNodes().indexOf(node);

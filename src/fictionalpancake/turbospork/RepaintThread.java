@@ -7,8 +7,8 @@ public class RepaintThread implements Runnable {
 
     @Override
     public void run() {
-        while(true) {
-            if(target.isShowing()) {
+        while (true) {
+            if (target.isShowing()) {
                 target.repaint();
             }
             try {

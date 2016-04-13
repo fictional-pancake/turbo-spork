@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.*;
+import java.util.Random;
 
 class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener {
     private GameHandler gameHandler;
@@ -47,12 +47,12 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
                 g.setColor(Color.darkGray);
                 g.drawOval(convertX(underMouse.getX() - GameConstants.NODE_RADIUS), convertY(underMouse.getY() - GameConstants.NODE_RADIUS), d, d);
             }
-            if(selectedNode != null) {
+            if (selectedNode != null) {
                 g.setColor(Color.pink);
                 g.drawOval(convertX(selectedNode.getX() - GameConstants.NODE_RADIUS), convertY(selectedNode.getY() - GameConstants.NODE_RADIUS), d, d);
             }
             g.setStroke(defaultStroke);
-            for(UnitGroup group : groups) {
+            for (UnitGroup group : groups) {
                 drawUnitGroup(g, group);
             }
         } else {
@@ -68,7 +68,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     private Node getNodeUnderMouse() {
         java.util.List<Node> nodes = gameHandler.getNodes();
         Node tr = null;
-        if(nodes != null) {
+        if (nodes != null) {
             for (Node node : nodes) {
                 if (isMouseOverNode(node)) {
                     tr = node;
@@ -88,8 +88,8 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
             Point coords1 = getRandomUnitCoords(rand1, x, y);
             Point coords2 = getRandomUnitCoords(rand2, x, y);
 
-            int unitX = (int) (coords1.getX()+(coords2.getX()-coords1.getX())*progress);
-            int unitY = (int) (coords1.getY()+(coords2.getY()-coords1.getY())*progress);
+            int unitX = (int) (coords1.getX() + (coords2.getX() - coords1.getX()) * progress);
+            int unitY = (int) (coords1.getY() + (coords2.getY() - coords1.getY()) * progress);
 
             // draw the unit
             g.setColor(color);
@@ -110,7 +110,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     }
 
     private int getGroupSeed(Node node, int owner) {
-        return gameHandler.indexOf(node)*(owner+1);
+        return gameHandler.indexOf(node) * (owner + 1);
     }
 
     private Point getRandomUnitCoords(Random rand, double x, double y) {
@@ -178,21 +178,32 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     @Override
     public void mousePressed(MouseEvent e) {
         Node underMouse = getNodeUnderMouse();
-        if(selectedNode == null) {
-            if (underMouse != null && underMouse.getOwner() == gameHandler.getPosition()) {
-                selectedNode = underMouse;
+        if (selectedNode == null) {
+            if (underMouse != null) {
+                int pos = gameHandler.getPosition();
+                boolean selectable = underMouse.getOwner() == pos;
+                if (!selectable) {
+                    for (UnitGroup group : gameHandler.getUnitGroups()) {
+                        if (group.getOwner() == pos && group.isComplete()) {
+                            selectable = true;
+                            break;
+                        }
+                    }
+                }
+                if (selectable) {
+                    selectedNode = underMouse;
+                }
             }
-        }
-        else if(selectedNode == underMouse) {
+        } else if (selectedNode == underMouse) {
             selectedNode = null;
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if(selectedNode != null) {
+        if (selectedNode != null) {
             Node underMouse = getNodeUnderMouse();
-            if(underMouse != null && underMouse != selectedNode) {
+            if (underMouse != null && underMouse != selectedNode) {
                 gameHandler.attack(underMouse, selectedNode);
                 selectedNode = null;
             }
