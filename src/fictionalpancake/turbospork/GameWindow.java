@@ -102,8 +102,8 @@ public class GameWindow extends JPanel {
         private class UserListCellRenderer extends DefaultListCellRenderer {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component tr = super.getListCellRendererComponent(list, value, index, false, false);
-                tr.setForeground(TurboSpork.getColorForOwner(index));
+                Component tr = super.getListCellRendererComponent(list, value, index, gameHandler.adjustForRemoved(index) == gameHandler.getPosition(), false);
+                tr.setForeground(TurboSpork.getColorForOwner(gameHandler.adjustForRemoved(index)));
                 return tr;
             }
         }

@@ -245,12 +245,14 @@ public class GameHandler extends WebSocketClient {
         return adjustForRemoved(users.indexOf(userID));
     }
 
-    private int adjustForRemoved(int i) {
+    int adjustForRemoved(int i) {
         int tr = i;
-        Collections.sort(removed);
-        for (int j : removed) {
-            if (j <= tr) {
-                tr--;
+        if (removed != null) {
+            Collections.sort(removed);
+            for (int j : removed) {
+                if (j <= tr) {
+                    tr--;
+                }
             }
         }
         return tr;

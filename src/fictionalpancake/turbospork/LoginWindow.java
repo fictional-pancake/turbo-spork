@@ -32,7 +32,6 @@ public class LoginWindow extends JPanel implements ActionListener {
         GridBagConstraints usernameConstraints = new GridBagConstraints();
         usernameConstraints.gridy = 3;
         usernameConstraints.gridwidth = 3;
-        username.requestFocus();
 
         password = new JPasswordField();
         password.setColumns(INPUT_SIZE);
@@ -92,6 +91,7 @@ public class LoginWindow extends JPanel implements ActionListener {
             panel.uriBox.setSelectedItem(uri);
         }
         frame.setVisible(true);
+        panel.username.requestFocusInWindow();
         return frame;
     }
 
