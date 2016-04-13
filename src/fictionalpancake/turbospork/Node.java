@@ -72,11 +72,11 @@ public class Node {
     public Node(Map map) {
         x = (int) ((long) map.get("x"));
         y = (int) ((long) map.get("y"));
-        owner = (int) ((long) map.get("owner"));
+        setOwner((int) ((long) map.get("owner")));
         generationTime = (int) ((long) map.get("generationTime"));
         unitCap = (int) ((long) map.get("unitCap"));
         unitSpeed = (double) map.get("unitSpeed");
-        lastUnitCheck = System.currentTimeMillis();
+        setUnits(0);
     }
 
     public void addUnits(int units) {
@@ -102,5 +102,14 @@ public class Node {
             lastUnits -= i;
             return i;
         }
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
+    }
+
+    public void setUnits(int units) {
+        lastUnits = units;
+        lastUnitCheck = System.currentTimeMillis();
     }
 }

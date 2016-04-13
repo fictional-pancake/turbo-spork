@@ -106,7 +106,7 @@ public class GameWindow extends JPanel {
                 String userID = gameHandler.getUserID();
                 System.out.println("Leader is " + leader);
                 System.out.println("You are " + userID);
-                startBtn.setEnabled(leader.equals(userID) && !gameHandler.isInProgress() && gameHandler.isMatchMeRoom());
+                startBtn.setEnabled(leader.equals(userID) && !gameHandler.isInProgress() && !gameHandler.isMatchMeRoom());
             }
         }
 

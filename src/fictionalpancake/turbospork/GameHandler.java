@@ -100,6 +100,7 @@ public class GameHandler extends WebSocketClient {
                         room = newRoom;
                         newRoom = null;
                     }
+                    lastWinner = null;
                     users.add(data);
                     if (roomInfoListener != null) {
                         roomInfoListener.onJoinedRoom(data);
@@ -172,6 +173,17 @@ public class GameHandler extends WebSocketClient {
                             group.takeUnits(1);
                             break;
                         }
+                    }
+                }
+                break;
+            case "sync":
+                for (int i = 0; i < nodes.size(); i++) {
+                    String c = spl[i];
+                    String[] curData = c.split("/");
+                    Node curNode = getNodes().get(i);
+                    curNode.setOwner(Integer.parseInt(curData[0]));
+                    if (curNode.getOwner() != -1) {
+                        curNode.setUnits(Integer.parseInt(curData[1]));
                     }
                 }
                 break;
@@ -278,6 +290,6 @@ public class GameHandler extends WebSocketClient {
     }
 
     public boolean isMatchMeRoom() {
-        return room.indexOf("matchme") == 0;
+        return room != null && room.indexOf("matchme") == 0;
     }
 }
