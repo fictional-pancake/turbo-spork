@@ -28,6 +28,8 @@ public class GameWindow extends JPanel {
         private JList<String> userList;
         private JButton joinBtn;
         private JButton startBtn;
+        private JButton matchBtn;
+        private JPanel topPanel;
         private GameHandler gameHandler;
 
         public RoomInfoPanel(GameHandler gameHandler) {
@@ -37,9 +39,15 @@ public class GameWindow extends JPanel {
             userList = new JList<String>(new DefaultListModel<String>());
             userList.setCellRenderer(new UserListCellRenderer());
             add(userList, BorderLayout.CENTER);
+            topPanel = new JPanel();
+            topPanel.setLayout(new GridLayout(2, 1));
             joinBtn = new JButton();
-            add(joinBtn, BorderLayout.NORTH);
+            matchBtn = new JButton("Play");
+            topPanel.add(joinBtn);
+            topPanel.add(matchBtn);
+            add(topPanel, BorderLayout.NORTH);
             joinBtn.addActionListener(this);
+            matchBtn.addActionListener(this);
             startBtn = new JButton("Start Game");
             startBtn.setEnabled(false);
             add(startBtn, BorderLayout.SOUTH);
@@ -53,6 +61,8 @@ public class GameWindow extends JPanel {
                 gameHandler.openJoinDialog();
             } else if (e.getSource() == startBtn) {
                 gameHandler.startGame();
+            } else if (e.getSource() == matchBtn) {
+                gameHandler.join("matchme");
             } else {
                 System.err.println("Unrecognized button.");
             }
@@ -89,13 +99,14 @@ public class GameWindow extends JPanel {
             DefaultListModel<String> listModel = ((DefaultListModel<String>) userList.getModel());
             if (listModel.isEmpty()) {
                 joinBtn.setText("Join Room");
+                startBtn.setEnabled(false);
             } else {
                 joinBtn.setText("Switch Room");
                 String leader = listModel.getElementAt(0);
                 String userID = gameHandler.getUserID();
                 System.out.println("Leader is " + leader);
                 System.out.println("You are " + userID);
-                startBtn.setEnabled(leader.equals(userID) && !gameHandler.isInProgress());
+                startBtn.setEnabled(leader.equals(userID) && !gameHandler.isInProgress() && gameHandler.isMatchMeRoom());
             }
         }
 

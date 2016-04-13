@@ -201,9 +201,13 @@ public class GameHandler extends WebSocketClient {
 
     public void openJoinDialog() {
         if (firstMessageListener == null) {
-            newRoom = JOptionPane.showInputDialog("Room to join?", "");
-            send("join:" + newRoom);
+            join(JOptionPane.showInputDialog("Room to join?", ""));
         }
+    }
+
+    public void join(String s) {
+        newRoom = s;
+        send("join:" + newRoom);
     }
 
     public String getUserID() {
@@ -271,5 +275,9 @@ public class GameHandler extends WebSocketClient {
 
     public List<UnitGroup> getUnitGroups() {
         return groups;
+    }
+
+    public boolean isMatchMeRoom() {
+        return room.indexOf("matchme") == 0;
     }
 }
