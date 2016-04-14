@@ -243,10 +243,26 @@ public class GameHandler extends WebSocketClient {
             Iterator<UnitGroup> it = groups.iterator();
             while (it.hasNext()) {
                 UnitGroup group = it.next();
-                if ((group.isComplete() && (group.getDest().getOwner() == group.getSource().getOwner()) || group.getUnits() < 1)) {
-                    it.remove();
-                    group.getDest().addUnits(group.getUnits());
-                    System.out.println("group dying");
+                if (group.isComplete()) {
+                    if (group.getDest().getOwner() == group.getSource().getOwner() || group.getUnits() < 1){
+                        it.remove();
+                        group.getDest().addUnits(group.getUnits());
+                        System.out.println("group dying");
+                    }
+                    else {
+                        boolean pastMe = false;
+                        for(int i = 0; i < groups.size(); i++) {
+                            UnitGroup other = groups.get(i);
+                            if(other == group) {
+                                pastMe = true;
+                            }
+                            else if(pastMe && other.isComplete() && other.getDest() == group.getDest() && other.getOwner() == group.getOwner()) {
+                                other.addUnits(group.getUnits());
+                                it.remove();
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }

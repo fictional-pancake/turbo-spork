@@ -80,4 +80,8 @@ public class UnitGroup {
     public double getProgress() {
         return Math.min(1, (System.currentTimeMillis() - start) / ((double) duration));
     }
+
+    public void addUnits(int units) {
+        this.units += units;
+    }
 }
