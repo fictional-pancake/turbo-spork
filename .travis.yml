@@ -6,7 +6,7 @@ jdk:
 before_deploy:
 - ant jar
 deploy:
-  provider: releases
+- provider: releases
   api_key:
     secure: AT5Vn83y1CZUqUwch1xAupu/cY1uf5rslZ/0bqNxZ26dXSQ9ctAN1quepiZfAO/WwuhLL2DQP7zx6iqjBxHZrsVYY6E67w6lc5b718Pk9wriA3KBsEnCsIeou4gHU6HKM1AguAB2OhNFzkm+V0xEjHeURBtIdZMM0qS7fwgPdgYQgDru20legqV0TJbsEV71tEUMGGHkGo50UpxZAuvheef2SMuKA9z8rWpt++fAgHAK8xcFB0Pqd1AI0ZuTciXnJ+WUt3lyY3ZK+FMUtFfd6URu02nCj9G7GZyoDZhCU6+dlbjsVf1ztCvzZTnYQiz3e2qJVxA+Cu8m/2i67DODYmpMRb5+fgIsmm42Ajd7LYuDE+r5YK4QCg3JEeqJ/6a7RQuH+hrJ/YEX5YAmgz7A7VR5UzfquhbGq9Ihge1eRYhsA8EBsktZIoay71o51ChxeSj/zWmRSSmz9MC6e1eRDdQjVjirSPD+kkfuq4iY7FKyrfS9qUK67CNuM5RCq8Dr9afaNwiyuFDv1cxTQgr8aQW0W+Ir70O0UR1T5V4xkkpHhpjTqkwLFWaR56scBGG50SNO3/yMAJBOQ/NkKzMfRo3Fmfs02GfwL6ZhU1kVFTwPiEPfU2W2KjFRRmJUEOkc95aUwHxi/cfqIMe+oA37HFmnuOAdsF3fkIaVlh9Xx7g=
   file: build/dist/turbo-spork.jar
@@ -15,3 +15,7 @@ deploy:
     repo: fictional-pancake/turbo-spork
     tags: true
     all_branches: true
+- provider: script
+  script: "curl --ftp-create-dirs -T build/dist/turbo-spork.jar -u $FTP_CREDENTIALS ftp://ftp.reederhome.net/turbo-spork-latest.jar"
+  on:
+    repo: fictional-pancake/turbo-spork
