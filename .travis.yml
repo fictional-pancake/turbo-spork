@@ -17,5 +17,6 @@ deploy:
     all_branches: true
 - provider: script
   script: "curl --ftp-create-dirs -T build/dist/turbo-spork.jar -u \"$FTP_CREDENTIALS\" ftp://ftp.reederhome.net/turbo-spork-latest.jar"
+  skip_cleanup: true
   on:
     repo: fictional-pancake/turbo-spork
