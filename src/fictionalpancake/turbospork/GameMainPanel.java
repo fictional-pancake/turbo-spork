@@ -52,7 +52,8 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
                 g.drawOval(convertX(selectedNode.getX() - GameConstants.NODE_RADIUS), convertY(selectedNode.getY() - GameConstants.NODE_RADIUS), d, d);
             }
             g.setStroke(defaultStroke);
-            for (UnitGroup group : groups) {
+            for (int i = 0; i < groups.size(); i++) {
+                UnitGroup group = groups.get(i);
                 drawUnitGroup(g, group);
             }
         } else {
