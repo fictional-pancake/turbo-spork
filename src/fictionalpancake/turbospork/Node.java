@@ -1,5 +1,7 @@
 package fictionalpancake.turbospork;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +12,19 @@ public class Node {
     private int generationTime;
     private int unitCap;
     private double unitSpeed;
-    private int lastUnits = 0;
+    private HashMap<Integer, Integer> units;
     private long lastUnitCheck;
+
+    public Node(Map map) {
+        x = TurboSpork.toInt(map.get("x"));
+        y = TurboSpork.toInt(map.get("y"));
+        setOwner(TurboSpork.toInt(map.get("owner")));
+        generationTime = TurboSpork.toInt(map.get("generationTime"));
+        unitCap = TurboSpork.toInt(map.get("unitCap"));
+        unitSpeed = (double) map.get("unitSpeed");
+        units = new HashMap<>();
+        lastUnitCheck = System.currentTimeMillis();
+    }
 
     public int getY() {
         return y;
@@ -31,6 +44,11 @@ public class Node {
 
     public int getOwner() {
         return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
+        lastUnitCheck = System.currentTimeMillis();
     }
 
     public int getGenerationTime(GameHandler gh) {
@@ -53,34 +71,31 @@ public class Node {
         return getGenerationTime(null);
     }
 
-    public int getUnits(GameHandler gh) {
-        if (getOwner() == -1) {
-            lastUnitCheck = System.currentTimeMillis();
-            return 0;
-        }
-        synchronized (this) {
-            while (lastUnitCheck + getGenerationTime(gh) <= System.currentTimeMillis()) {
-                lastUnitCheck += getGenerationTime(gh);
-                if (lastUnits < getUnitCap()) {
-                    lastUnits++;
+    public int getUnits(int owner, GameHandler gh) {
+        synchronized (units) {
+            int tr = 0;
+            if(units.containsKey(owner)) {
+                tr = units.get(owner);
+            }
+            if (owner == getOwner()) {
+                while (lastUnitCheck + getGenerationTime(gh) <= System.currentTimeMillis()) {
+                    lastUnitCheck += getGenerationTime(gh);
+                    if (tr < getUnitCap()) {
+                        tr++;
+                    }
                 }
             }
-            return lastUnits;
+            units.put(owner, tr);
+            return tr;
         }
     }
 
-    public Node(Map map) {
-        x = (int) ((long) map.get("x"));
-        y = (int) ((long) map.get("y"));
-        setOwner((int) ((long) map.get("owner")));
-        generationTime = (int) ((long) map.get("generationTime"));
-        unitCap = (int) ((long) map.get("unitCap"));
-        unitSpeed = (double) map.get("unitSpeed");
-        setUnits(0);
-    }
-
-    public void addUnits(int units) {
-        lastUnits += units;
+    public void addUnits(int owner, int units) {
+        int c = 0;
+        if(this.units.containsKey(owner)) {
+            c = this.units.get(owner);
+        }
+        this.units.put(owner, c + units);
     }
 
     public void updateProp(String key, String value) {
@@ -93,23 +108,46 @@ public class Node {
         }
     }
 
-    public int takeUnits(int i, GameHandler gameHandler) {
-        int cu = getUnits(gameHandler);
+    public int takeUnits(int owner, int i, GameHandler gameHandler) {
+        int cu = getUnits(owner, gameHandler);
+        int tr;
         if (i > cu) {
-            lastUnits -= cu;
-            return cu;
+            tr = cu;
         } else {
-            lastUnits -= i;
-            return i;
+            tr = i;
+        }
+        addUnits(owner, -i);
+        return tr;
+    }
+
+    public void setUnits(int owner, int units) {
+        this.units.put(owner, units);
+        if (owner == this.owner) {
+            lastUnitCheck = System.currentTimeMillis();
         }
     }
 
-    public void setOwner(int owner) {
-        this.owner = owner;
+    public List<Integer> getUnitOwners(GameHandler gh) {
+        List<Integer> tr = new ArrayList<>();
+        for (int owner : units.keySet()) {
+            if (getUnits(owner, gh) > 0) {
+                tr.add(owner);
+            }
+        }
+        return tr;
     }
 
-    public void setUnits(int units) {
-        lastUnits = units;
-        lastUnitCheck = System.currentTimeMillis();
+    public void sync(Map curNodeData) {
+        int owner = TurboSpork.toInt(curNodeData.get("owner"));
+        if (getOwner() != owner) {
+            setOwner(owner);
+        }
+        synchronized (units) {
+            units.clear();
+            Map unitMap = (Map) curNodeData.get("units");
+            for (Object i : unitMap.keySet()) {
+                units.put(TurboSpork.toInt(i), TurboSpork.toInt(unitMap.get(i)));
+            }
+        }
     }
 }

@@ -39,7 +39,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
                 node = nodes.get(i);
                 g.setColor(TurboSpork.getColorForOwner(node.getOwner()));
                 g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), d, d);
-                drawUnitGroup(g, node);
+                drawNodeUnits(g, node);
             }
             g.setStroke(outlineStroke);
             Node underMouse = getNodeUnderMouse();
@@ -100,9 +100,11 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
         }
     }
 
-    private void drawUnitGroup(Graphics g, Node node) {
-        int seed = getGroupSeed(node, node.getOwner());
-        drawUnitGroup(g, seed, seed, 1, node.getOwner(), node.getUnits(gameHandler), node.getX(), node.getY());
+    private void drawNodeUnits(Graphics g, Node node) {
+        for(int owner : node.getUnitOwners(gameHandler)) {
+            int seed = getGroupSeed(node, owner);
+            drawUnitGroup(g, seed, seed, 1, owner, node.getUnits(owner, gameHandler), node.getX(), node.getY());
+        }
     }
 
     private void drawUnitGroup(Graphics g, UnitGroup group) {

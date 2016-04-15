@@ -48,4 +48,16 @@ public class TurboSpork {
             return new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
         }
     }
+
+    public static int toInt(Object o) {
+        if(o instanceof Integer) {
+            return ((int) o);
+        }
+        else if(o instanceof Long) {
+            return ((Long) o).intValue();
+        }
+        else {
+            return Integer.parseInt(o.toString());
+        }
+    }
 }

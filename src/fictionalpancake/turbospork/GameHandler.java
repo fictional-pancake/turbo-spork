@@ -134,15 +134,7 @@ public class GameHandler extends WebSocketClient {
                     groups.add(newGroup);
                     int taken = 0;
                     int toTake = newGroup.getUnits();
-                    if (newGroup.getOwner() == newGroup.getSource().getOwner()) {
-                        taken += newGroup.getSource().takeUnits(toTake, this);
-                    }
-                    for (int i = 0; i < groups.size() && taken < toTake; i++) {
-                        UnitGroup group = groups.get(i);
-                        if (group.getDest() == newGroup.getSource() && group.getOwner() == newGroup.getOwner()) {
-                            taken += group.takeUnits(toTake - taken);
-                        }
-                    }
+                    taken += newGroup.getSource().takeUnits(newGroup.getOwner(), toTake, this);
                     if (taken < toTake) {
                         System.out.println("Warning: only took " + taken + "/" + toTake);
                     }
@@ -163,26 +155,33 @@ public class GameHandler extends WebSocketClient {
             case "death":
                 Node node = getNodes().get(Integer.parseInt(spl[0]));
                 int owner = Integer.parseInt(spl[1]);
-                if (node.getOwner() == owner) {
-                    node.takeUnits(1, this);
-                } else {
-                    for (UnitGroup group : groups) {
-                        if (group.getOwner() == owner) {
-                            group.takeUnits(1);
-                            break;
-                        }
-                    }
-                }
+                node.takeUnits(owner, 1, this);
                 break;
             case "sync":
-                for (int i = 0; i < nodes.size(); i++) {
-                    String c = spl[i];
-                    String[] curData = c.split("/");
-                    Node curNode = getNodes().get(i);
-                    curNode.setOwner(Integer.parseInt(curData[0]));
-                    if (curNode.getOwner() != -1) {
-                        curNode.setUnits(Integer.parseInt(curData[1]));
+                try {
+                    Map map = (Map) jsonParser.parse(data);
+                    List<Map> nodeData = ((List<Map>) map.get("nodes"));
+                    List<Node> nodes = getNodes();
+                    for(int i = 0; i < nodes.size(); i++) {
+                        Map curNodeData = nodeData.get(i);
+                        Node curNode = nodes.get(i);
+                        curNode.sync(curNodeData);
                     }
+                    Map<String,Long> groupMap = ((Map<String,Long>) map.get("groups"));
+                    List<UnitGroup> groups = getUnitGroups();
+                    Iterator<UnitGroup> it = groups.iterator();
+                    while(it.hasNext()) {
+                        UnitGroup group = it.next();
+                        String id = group.getID()+"";
+                        if(groupMap.containsKey(id)) {
+                            group.setUnits(TurboSpork.toInt(groupMap.get(id)));
+                        }
+                        else {
+                            it.remove();
+                        }
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
                 break;
             default:
@@ -242,24 +241,8 @@ public class GameHandler extends WebSocketClient {
             while (it.hasNext()) {
                 UnitGroup group = it.next();
                 if (group.isComplete()) {
-                    if (group.getDest().getOwner() == group.getSource().getOwner() || group.getUnits() < 1){
-                        it.remove();
-                        group.getDest().addUnits(group.getUnits());
-                    }
-                    else {
-                        boolean pastMe = false;
-                        for(int i = 0; i < groups.size(); i++) {
-                            UnitGroup other = groups.get(i);
-                            if(other == group) {
-                                pastMe = true;
-                            }
-                            else if(pastMe && other.isComplete() && other.getDest() == group.getDest() && other.getOwner() == group.getOwner()) {
-                                other.addUnits(group.getUnits());
-                                it.remove();
-                                break;
-                            }
-                        }
-                    }
+                    it.remove();
+                    group.getDest().addUnits(group.getOwner(), group.getUnits());
                 }
             }
         }

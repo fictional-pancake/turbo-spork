@@ -10,17 +10,19 @@ public class UnitGroup {
     private long start;
     private int units;
     private int owner;
+    private int id;
 
     private double xVel;
     private double yVel;
 
     public UnitGroup(Map map, GameHandler gameHandler) {
         List<Node> nodes = gameHandler.getNodes();
-        source = nodes.get((int) ((long) map.get("source")));
-        dest = nodes.get((int) ((long) map.get("dest")));
-        duration = (int) ((long) map.get("duration"));
-        units = (int) ((long) map.get("size"));
-        owner = (int) ((long) map.get("owner"));
+        source = nodes.get(TurboSpork.toInt(map.get("source")));
+        dest = nodes.get(TurboSpork.toInt(map.get("dest")));
+        duration = TurboSpork.toInt(map.get("duration"));
+        units = TurboSpork.toInt(map.get("size"));
+        owner = TurboSpork.toInt(map.get("owner"));
+        id = TurboSpork.toInt(map.get("id"));
         start = System.currentTimeMillis();
 
         xVel = ((double) (dest.getX() - source.getX())) / duration;
@@ -81,7 +83,11 @@ public class UnitGroup {
         return Math.min(1, (System.currentTimeMillis() - start) / ((double) duration));
     }
 
-    public void addUnits(int units) {
-        this.units += units;
+    public int getID() {
+        return id;
+    }
+
+    public void setUnits(int i) {
+        units = i;
     }
 }
