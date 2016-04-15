@@ -25,7 +25,7 @@ units to a node.
 | ------------- | -------------- |
 | February 26   |    A server    |
 | April 1       |    A client    |
-| April 29      |Polish (mobile?)|
+| April 29      |  Working game  |
 
 ## Reality Check
 The only issue would be hosting the server. We found a service called Heroku that would allow us to host
