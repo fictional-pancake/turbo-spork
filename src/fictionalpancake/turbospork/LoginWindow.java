@@ -113,7 +113,6 @@ public class LoginWindow extends JPanel implements ActionListener {
                 } catch (URISyntaxException e1) {
                     e1.printStackTrace();
                 }
-                System.out.println(uri);
                 gh = new GameHandler(new DataListener<String>() {
                     @Override
                     public void onData(String data) {

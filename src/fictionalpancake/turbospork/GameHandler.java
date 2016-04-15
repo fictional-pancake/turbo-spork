@@ -49,13 +49,11 @@ public class GameHandler extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        System.out.println("opened");
         opened = true;
     }
 
     @Override
     public void onMessage(String s) {
-        System.out.println(s);
         if (firstMessageListener != null) {
             firstMessageListener.onData(s);
 
@@ -247,7 +245,6 @@ public class GameHandler extends WebSocketClient {
                     if (group.getDest().getOwner() == group.getSource().getOwner() || group.getUnits() < 1){
                         it.remove();
                         group.getDest().addUnits(group.getUnits());
-                        System.out.println("group dying");
                     }
                     else {
                         boolean pastMe = false;

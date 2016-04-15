@@ -81,7 +81,6 @@ public class GameWindow extends JPanel {
         @Override
         public void onJoinedRoom(String id) {
             ((DefaultListModel<String>) userList.getModel()).addElement(id);
-            System.out.println(id + " joined");
             updateButtonState();
         }
 
@@ -104,8 +103,6 @@ public class GameWindow extends JPanel {
                 joinBtn.setText("Switch Room");
                 String leader = listModel.getElementAt(0);
                 String userID = gameHandler.getUserID();
-                System.out.println("Leader is " + leader);
-                System.out.println("You are " + userID);
                 startBtn.setEnabled(leader.equals(userID) && !gameHandler.isInProgress() && !gameHandler.isMatchMeRoom());
             }
         }
