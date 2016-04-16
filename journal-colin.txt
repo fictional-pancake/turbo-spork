@@ -140,3 +140,30 @@
 	and join a room so I can start a game without
 	running the whole client twice, since my computer
 	is really bad at that.
+
+4/16/15:
+	A lot of stuff happened this week.  We got some
+	playtesting in so we could find issues, and we
+	found issues.  If a player left during a match,
+	the players after them became shifted up and
+	switched their colors.  If a player sent a unit
+	group from a node that then got captured, the
+	units would change to the capturing player's
+	color.  If two players' units were on a neutral
+	node, nothing would happen.  Hopefully all that
+	should be fixed now, and several tweaks have
+	been made to the gameplay.  We now have a
+	matchmaking feature, so you can just play with
+	people without using the rooms.  The initial
+	handshake now verifies your client version
+	matches the server.  Units now take longer to
+	generate, and even longer if they're being
+	attacked.  Nodes now take a few seconds before
+	they can be claimed.  You can now make your
+	units retreat.  I redid how the client handles
+	multiple owners' units on a node so it matches
+	the server, then added a sync feature so the
+	server can send updates about where all the
+	units should be.  I also set up Travis CI to
+	automatically deploy code to the test server
+	and build a client jar whenever we commit.
