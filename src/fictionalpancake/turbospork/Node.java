@@ -51,35 +51,26 @@ public class Node {
         lastUnitCheck = System.currentTimeMillis();
     }
 
-    public int getGenerationTime(GameHandler gh) {
+    public int getGenerationTime() {
         int tr = generationTime;
-        if (gh != null) {
-            List<UnitGroup> groups = gh.getUnitGroups();
-            if (groups != null) {
-                for (UnitGroup group : groups) {
-                    if (group.getDest() == this && group.isComplete() && group.getUnits() > 0 && group.getOwner() != getOwner()) {
-                        tr *= 2;
-                        break;
-                    }
-                }
+        for(int owner : units.keySet()) {
+            if(units.get(owner) > 0 && owner != getOwner()) {
+                tr *= 2;
+                break;
             }
         }
         return tr;
     }
 
-    public int getGenerationTime() {
-        return getGenerationTime(null);
-    }
-
-    public int getUnits(int owner, GameHandler gh) {
+    public int getUnits(int owner) {
         synchronized (units) {
             int tr = 0;
             if(units.containsKey(owner)) {
                 tr = units.get(owner);
             }
             if (owner == getOwner()) {
-                while (lastUnitCheck + getGenerationTime(gh) <= System.currentTimeMillis()) {
-                    lastUnitCheck += getGenerationTime(gh);
+                while (lastUnitCheck + getGenerationTime() <= System.currentTimeMillis()) {
+                    lastUnitCheck += getGenerationTime();
                     if (tr < getUnitCap()) {
                         tr++;
                     }
@@ -108,8 +99,8 @@ public class Node {
         }
     }
 
-    public int takeUnits(int owner, int i, GameHandler gameHandler) {
-        int cu = getUnits(owner, gameHandler);
+    public int takeUnits(int owner, int i) {
+        int cu = getUnits(owner);
         int tr;
         if (i > cu) {
             tr = cu;
@@ -127,10 +118,10 @@ public class Node {
         }
     }
 
-    public List<Integer> getUnitOwners(GameHandler gh) {
+    public List<Integer> getUnitOwners() {
         List<Integer> tr = new ArrayList<>();
         for (int owner : units.keySet()) {
-            if (getUnits(owner, gh) > 0) {
+            if (getUnits(owner) > 0) {
                 tr.add(owner);
             }
         }

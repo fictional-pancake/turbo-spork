@@ -15,6 +15,8 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     private int mouseY;
     private int mouseX;
     private Node selectedNode;
+    private Node lastSelected;
+    private Node lastAttacked;
 
     public GameMainPanel(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
@@ -101,9 +103,9 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     }
 
     private void drawNodeUnits(Graphics g, Node node) {
-        for(int owner : node.getUnitOwners(gameHandler)) {
+        for (int owner : node.getUnitOwners()) {
             int seed = getGroupSeed(node, owner);
-            drawUnitGroup(g, seed, seed, 1, owner, node.getUnits(owner, gameHandler), node.getX(), node.getY());
+            drawUnitGroup(g, seed, seed, 1, owner, node.getUnits(owner), node.getX(), node.getY());
         }
     }
 
@@ -182,21 +184,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     public void mousePressed(MouseEvent e) {
         Node underMouse = getNodeUnderMouse();
         if (selectedNode == null) {
-            if (underMouse != null) {
-                int pos = gameHandler.getPosition();
-                boolean selectable = underMouse.getOwner() == pos;
-                if (!selectable) {
-                    for (UnitGroup group : gameHandler.getUnitGroups()) {
-                        if (group.getOwner() == pos && group.isComplete()) {
-                            selectable = true;
-                            break;
-                        }
-                    }
-                }
-                if (selectable) {
-                    selectedNode = underMouse;
-                }
-            }
+            select(underMouse);
         } else if (selectedNode == underMouse) {
             selectedNode = null;
         }
@@ -206,10 +194,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     public void mouseReleased(MouseEvent e) {
         if (selectedNode != null) {
             Node underMouse = getNodeUnderMouse();
-            if (underMouse != null && underMouse != selectedNode) {
-                gameHandler.attack(underMouse, selectedNode);
-                selectedNode = null;
-            }
+            attack(underMouse);
         }
     }
 
@@ -221,5 +206,31 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    public void select(Node node) {
+        if (selectedNode == null && node != null) {
+            int pos = gameHandler.getPosition();
+            if (pos == node.getOwner() || node.getUnits(pos) > 0) {
+                selectedNode = node;
+                lastSelected = node;
+            }
+        }
+    }
+
+    public void attack(Node node) {
+        if (selectedNode != null && node != null && node != selectedNode) {
+            gameHandler.attack(node, selectedNode);
+            selectedNode = null;
+            lastAttacked = node;
+        }
+    }
+
+    public void selectLast() {
+        select(lastSelected);
+    }
+
+    public void attackLast() {
+        attack(lastAttacked);
     }
 }

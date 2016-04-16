@@ -22,6 +22,7 @@ public class GameHandler extends WebSocketClient {
     private List<UnitGroup> groups;
     private List<String> users;
     private List<Integer> removed;
+    private JTextArea syncDataComp;
 
     private JSONParser jsonParser = new JSONParser();
 
@@ -29,6 +30,9 @@ public class GameHandler extends WebSocketClient {
         super(uri);
         this.firstMessageListener = firstMessageListener;
         users = new ArrayList<String>();
+        syncDataComp = new JTextArea();
+        syncDataComp.setEditable(false);
+        syncDataComp.setLineWrap(true);
 
         new Thread(new Runnable() {
             @Override
@@ -134,7 +138,7 @@ public class GameHandler extends WebSocketClient {
                     groups.add(newGroup);
                     int taken = 0;
                     int toTake = newGroup.getUnits();
-                    taken += newGroup.getSource().takeUnits(newGroup.getOwner(), toTake, this);
+                    taken += newGroup.getSource().takeUnits(newGroup.getOwner(), toTake);
                     if (taken < toTake) {
                         System.out.println("Warning: only took " + taken + "/" + toTake);
                     }
@@ -155,10 +159,11 @@ public class GameHandler extends WebSocketClient {
             case "death":
                 Node node = getNodes().get(Integer.parseInt(spl[0]));
                 int owner = Integer.parseInt(spl[1]);
-                node.takeUnits(owner, 1, this);
+                node.takeUnits(owner, 1);
                 break;
             case "sync":
                 try {
+                    syncDataComp.setText(data);
                     Map map = (Map) jsonParser.parse(data);
                     List<Map> nodeData = ((List<Map>) map.get("nodes"));
                     List<Node> nodes = getNodes();
@@ -210,7 +215,13 @@ public class GameHandler extends WebSocketClient {
 
     public void openJoinDialog() {
         if (firstMessageListener == null) {
-            join(JOptionPane.showInputDialog("Room to join?", ""));
+            String toJoin = JOptionPane.showInputDialog("Room to join?", "");
+            if(toJoin != null) {
+                join(toJoin);
+            }
+            else {
+                send("leave");
+            }
         }
     }
 
@@ -287,5 +298,16 @@ public class GameHandler extends WebSocketClient {
 
     public boolean isMatchMeRoom() {
         return room != null && room.indexOf("matchme") == 0;
+    }
+
+    public List<String> getUsers() {
+        return users;
+    }
+
+    public void openDebugDialog() {
+        JFrame dialog = new JFrame();
+        dialog.add(syncDataComp);
+        dialog.setSize(500, 200);
+        dialog.setVisible(true);
     }
 }

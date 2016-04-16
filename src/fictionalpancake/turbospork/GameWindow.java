@@ -3,36 +3,118 @@ package fictionalpancake.turbospork;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 public class GameWindow extends JPanel {
+
+    private GameHandler gameHandler;
+    private GameMainPanel mainPanel;
+
+    final NiceAction ACTION_OPEN_JOIN_DIALOG = new NiceAction("Switch Room", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameHandler.openJoinDialog();
+        }
+    };
+
+    final NiceAction ACTION_PLAY_MATCH = new NiceAction("Play", KeyEvent.VK_P, KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameHandler.join("matchme");
+        }
+    };
+
+    final NiceAction ACTION_START_GAME = new NiceAction("Start Game", KeyEvent.VK_SPACE, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_MASK)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameHandler.startGame();
+        }
+    };
+
+    final NiceAction ACTION_RESELECT_NODE = new NiceAction("Reselect Last Node", KeyEvent.VK_R, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mainPanel.selectLast();
+        }
+    };
+
+    final NiceAction ACTION_REATTACK_NODE = new NiceAction("Attack Last Node", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mainPanel.attackLast();
+        }
+    };
+
+    final NiceAction ACTION_OPEN_DEBUG_DIALOG = new NiceAction("Open Debug Window", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameHandler.openDebugDialog();
+        }
+    };
+
     public GameWindow(GameHandler gameHandler) {
+        this.gameHandler = gameHandler;
         setLayout(new BorderLayout());
-        RoomInfoPanel leftPanel = new RoomInfoPanel(gameHandler);
+        RoomInfoPanel leftPanel = new RoomInfoPanel(this, gameHandler);
         add(leftPanel, BorderLayout.WEST);
-        GameMainPanel rightPanel = new GameMainPanel(gameHandler);
-        add(rightPanel, BorderLayout.CENTER);
-        new Thread(new RepaintThread(rightPanel)).start();
+        mainPanel = new GameMainPanel(gameHandler);
+        add(mainPanel, BorderLayout.CENTER);
+        new Thread(new RepaintThread(mainPanel)).start();
     }
 
     public static void open(GameHandler gameHandler) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(new GameWindow(gameHandler));
+        GameWindow panel = new GameWindow(gameHandler);
+        frame.add(panel);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(Math.min(1024, screenSize.width), Math.min(768, screenSize.height));
+        frame.setSize(Math.min(1000, screenSize.width), Math.min(700, screenSize.height));
+        frame.setJMenuBar(panel.getGameMenu());
         frame.setVisible(true);
     }
 
-    private class RoomInfoPanel extends JPanel implements RoomInfoListener, ActionListener {
+    private JMenuBar getGameMenu() {
+        JMenuBar bar = new JMenuBar();
+        JMenu roomMenu = new JMenu("Room");
+        roomMenu.setMnemonic(KeyEvent.VK_R);
+        roomMenu.add(ACTION_OPEN_JOIN_DIALOG);
+        roomMenu.add(ACTION_PLAY_MATCH);
+        roomMenu.add(ACTION_START_GAME);
+        bar.add(roomMenu);
+        JMenu gameMenu = new JMenu("Game");
+        gameMenu.setMnemonic(KeyEvent.VK_G);
+        gameMenu.add(ACTION_START_GAME);
+        gameMenu.add(ACTION_RESELECT_NODE);
+        gameMenu.add(ACTION_REATTACK_NODE);
+        gameMenu.add(ACTION_OPEN_DEBUG_DIALOG);
+        bar.add(gameMenu);
+        return bar;
+    }
+
+    private void updateActionState() {
+        java.util.List<String> list = gameHandler.getUsers();
+        if (list.isEmpty()) {
+            ACTION_OPEN_JOIN_DIALOG.setName("Join Room");
+            ACTION_START_GAME.setEnabled(false);
+        } else {
+            ACTION_OPEN_JOIN_DIALOG.setName("Switch Room");
+            String leader = list.get(0);
+            String userID = gameHandler.getUserID();
+            ACTION_START_GAME.setEnabled(leader.equals(userID) && !gameHandler.isInProgress() && !gameHandler.isMatchMeRoom());
+        }
+    }
+
+    private class RoomInfoPanel extends JPanel implements RoomInfoListener {
         private JList<String> userList;
         private JButton joinBtn;
         private JButton startBtn;
         private JButton matchBtn;
         private JPanel topPanel;
         private GameHandler gameHandler;
+        private GameWindow gameWindow;
 
-        public RoomInfoPanel(GameHandler gameHandler) {
+        public RoomInfoPanel(GameWindow gameWindow, GameHandler gameHandler) {
+            this.gameWindow = gameWindow;
             this.gameHandler = gameHandler;
             gameHandler.setRoomInfoListener(this);
             setLayout(new BorderLayout());
@@ -41,31 +123,15 @@ public class GameWindow extends JPanel {
             add(userList, BorderLayout.CENTER);
             topPanel = new JPanel();
             topPanel.setLayout(new GridLayout(2, 1));
-            joinBtn = new JButton();
-            matchBtn = new JButton("Play");
+            joinBtn = new JButton(ACTION_OPEN_JOIN_DIALOG);
+            matchBtn = new JButton(ACTION_PLAY_MATCH);
             topPanel.add(joinBtn);
             topPanel.add(matchBtn);
             add(topPanel, BorderLayout.NORTH);
-            joinBtn.addActionListener(this);
-            matchBtn.addActionListener(this);
-            startBtn = new JButton("Start Game");
+            startBtn = new JButton(ACTION_START_GAME);
             startBtn.setEnabled(false);
             add(startBtn, BorderLayout.SOUTH);
-            startBtn.addActionListener(this);
-            updateButtonState();
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == joinBtn) {
-                gameHandler.openJoinDialog();
-            } else if (e.getSource() == startBtn) {
-                gameHandler.startGame();
-            } else if (e.getSource() == matchBtn) {
-                gameHandler.join("matchme");
-            } else {
-                System.err.println("Unrecognized button.");
-            }
+            gameWindow.updateActionState();
         }
 
         @Override
@@ -75,36 +141,23 @@ public class GameWindow extends JPanel {
             } else {
                 ((DefaultListModel<String>) userList.getModel()).removeElement(id);
             }
-            updateButtonState();
+            gameWindow.updateActionState();
         }
 
         @Override
         public void onJoinedRoom(String id) {
             ((DefaultListModel<String>) userList.getModel()).addElement(id);
-            updateButtonState();
+            gameWindow.updateActionState();
         }
 
         @Override
         public void onGameStart() {
-            updateButtonState();
+            gameWindow.updateActionState();
         }
 
         @Override
         public void onGameEnd() {
-            updateButtonState();
-        }
-
-        private void updateButtonState() {
-            DefaultListModel<String> listModel = ((DefaultListModel<String>) userList.getModel());
-            if (listModel.isEmpty()) {
-                joinBtn.setText("Join Room");
-                startBtn.setEnabled(false);
-            } else {
-                joinBtn.setText("Switch Room");
-                String leader = listModel.getElementAt(0);
-                String userID = gameHandler.getUserID();
-                startBtn.setEnabled(leader.equals(userID) && !gameHandler.isInProgress() && !gameHandler.isMatchMeRoom());
-            }
+            gameWindow.updateActionState();
         }
 
         private class UserListCellRenderer extends DefaultListCellRenderer {
@@ -117,4 +170,27 @@ public class GameWindow extends JPanel {
         }
     }
 
+    private abstract class NiceAction extends AbstractAction {
+        public NiceAction() {
+            super();
+        }
+
+        public NiceAction(String name) {
+            super(name);
+        }
+
+        public NiceAction(String name, int mnemonic) {
+            this(name);
+            putValue(MNEMONIC_KEY, mnemonic);
+        }
+
+        public NiceAction(String name, int mnemonic, KeyStroke accelerator) {
+            this(name, mnemonic);
+            putValue(ACCELERATOR_KEY, accelerator);
+        }
+
+        public void setName(String name) {
+            putValue(NAME, name);
+        }
+    }
 }
