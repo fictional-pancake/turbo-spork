@@ -44,7 +44,7 @@ public class TurboSpork {
         } else if (owner < GameConstants.COLORS.length) {
             return GameConstants.COLORS[owner];
         } else {
-            Random r = new Random();
+            Random r = new Random(owner);
             return new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
         }
     }

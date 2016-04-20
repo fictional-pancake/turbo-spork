@@ -13,7 +13,14 @@ public class GameWindow extends JPanel {
     final NiceAction ACTION_OPEN_JOIN_DIALOG = new NiceAction("Switch Room", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK)) {
         @Override
         public void actionPerformed(ActionEvent e) {
-            gameHandler.openJoinDialog();
+            gameHandler.openJoinDialog(false);
+        }
+    };
+
+    final NiceAction ACTION_OPEN_SPECTATE_DIALOG = new NiceAction("Spectate Room", KeyEvent.VK_C, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            gameHandler.openJoinDialog(true);
         }
     };
 
@@ -78,6 +85,7 @@ public class GameWindow extends JPanel {
         JMenu roomMenu = new JMenu("Room");
         roomMenu.setMnemonic(KeyEvent.VK_R);
         roomMenu.add(ACTION_OPEN_JOIN_DIALOG);
+        roomMenu.add(ACTION_OPEN_SPECTATE_DIALOG);
         roomMenu.add(ACTION_PLAY_MATCH);
         roomMenu.add(ACTION_START_GAME);
         bar.add(roomMenu);

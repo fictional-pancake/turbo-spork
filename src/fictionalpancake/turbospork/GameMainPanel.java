@@ -66,6 +66,11 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
                 drawStringCenter(g, lastWinner + " wins!", convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.FIELD_SIZE / 2));
             }
         }
+        if(gameHandler.isSpectating()) {
+            g.setColor(Color.red);
+            g.setFont(new Font("SansSerif", Font.PLAIN, convertSize(GameConstants.SPECTATING_TEXT_SIZE)));
+            g.drawString("Spectating", convertX(0), convertY(100)-g.getFontMetrics().getDescent());
+        }
     }
 
     private Node getNodeUnderMouse() {
@@ -211,7 +216,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     public void select(Node node) {
         if (selectedNode == null && node != null) {
             int pos = gameHandler.getPosition();
-            if (pos == node.getOwner() || node.getUnits(pos) > 0) {
+            if ((pos != -1 && pos == node.getOwner()) || node.getUnits(pos) > 0) {
                 selectedNode = node;
                 lastSelected = node;
             }

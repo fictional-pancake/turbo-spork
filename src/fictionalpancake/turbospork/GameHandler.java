@@ -167,21 +167,20 @@ public class GameHandler extends WebSocketClient {
                     Map map = (Map) jsonParser.parse(data);
                     List<Map> nodeData = ((List<Map>) map.get("nodes"));
                     List<Node> nodes = getNodes();
-                    for(int i = 0; i < nodes.size(); i++) {
+                    for (int i = 0; i < nodes.size(); i++) {
                         Map curNodeData = nodeData.get(i);
                         Node curNode = nodes.get(i);
                         curNode.sync(curNodeData);
                     }
-                    Map<String,Long> groupMap = ((Map<String,Long>) map.get("groups"));
+                    Map<String, Long> groupMap = ((Map<String, Long>) map.get("groups"));
                     List<UnitGroup> groups = getUnitGroups();
                     Iterator<UnitGroup> it = groups.iterator();
-                    while(it.hasNext()) {
+                    while (it.hasNext()) {
                         UnitGroup group = it.next();
-                        String id = group.getID()+"";
-                        if(groupMap.containsKey(id)) {
+                        String id = group.getID() + "";
+                        if (groupMap.containsKey(id)) {
                             group.setUnits(TurboSpork.toInt(groupMap.get(id)));
-                        }
-                        else {
+                        } else {
                             it.remove();
                         }
                     }
@@ -213,13 +212,14 @@ public class GameHandler extends WebSocketClient {
         e.printStackTrace();
     }
 
-    public void openJoinDialog() {
+    public void openJoinDialog(boolean spectate) {
         if (firstMessageListener == null) {
-            String toJoin = JOptionPane.showInputDialog("Room to join?", "");
-            if(toJoin != null) {
-                join(toJoin);
-            }
-            else {
+            String toJoin = JOptionPane.showInputDialog("Room to " + (spectate ? "spectate" : "join") + "?", "");
+            if (toJoin != null) {
+                if (spectate) {
+                    send("spectate:"+toJoin);
+                } else join(toJoin);
+            } else {
                 send("leave");
             }
         }
@@ -309,5 +309,9 @@ public class GameHandler extends WebSocketClient {
         dialog.add(syncDataComp);
         dialog.setSize(500, 200);
         dialog.setVisible(true);
+    }
+
+    public boolean isSpectating() {
+        return !getUsers().isEmpty() && getPosition() == -1;
     }
 }
