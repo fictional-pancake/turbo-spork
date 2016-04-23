@@ -167,3 +167,25 @@
 	units should be.  I also set up Travis CI to
 	automatically deploy code to the test server
 	and build a client jar whenever we commit.
+
+4/23/15:
+	stupidclient.js now has stupid AI.  Originally,
+	it just spammed the server with attack commands,
+	but that just caused chaos, retreating, and FPS
+	drops for other players.  Now it keeps track of
+	the nodes it owns and sends those nodes to
+	random places.  It's still pretty bad at winning.
+	I added support for spectating a room so that I
+	could watch two bots play each other without
+	adding nodes of my own.  I added support for
+	chat, but it hasn't gotten support on the client
+	yet, so I also made the server accept slightly
+	older versions of the client because they
+	technically still work, they just won't receive
+	chat or start spectating rooms.  I improved the
+	web stuff a little, now there's a header on each
+	page and the signup page uses ajax so you don't
+	have to go back if you get an error.
+	Unfortunately, that made the form data have a
+	different format, so I added the multiparty
+	module to parse it and used form-data to test it.
