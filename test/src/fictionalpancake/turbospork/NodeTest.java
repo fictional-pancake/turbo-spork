@@ -1,5 +1,5 @@
-import fictionalpancake.turbospork.GameConstants;
-import fictionalpancake.turbospork.Node;
+package fictionalpancake.turbospork;
+
 import org.junit.Assert;
 import org.junit.Test;
 

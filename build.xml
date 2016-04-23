@@ -36,7 +36,7 @@
                 <pathelement path="${testClasses}"/>
             </classpath>
             <batchtest>
-                <fileset dir="test/src" includes="*Test.java"/>
+                <fileset dir="test/src" includes="**/*Test.java"/>
             </batchtest>
         </junit>
     </target>

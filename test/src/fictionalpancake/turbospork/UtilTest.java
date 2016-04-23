@@ -1,4 +1,5 @@
-import fictionalpancake.turbospork.TurboSpork;
+package fictionalpancake.turbospork;
+
 import org.junit.Assert;
 import org.junit.Test;
 
