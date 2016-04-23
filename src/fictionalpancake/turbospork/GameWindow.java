@@ -10,49 +10,49 @@ public class GameWindow extends JPanel {
     private GameHandler gameHandler;
     private GameMainPanel mainPanel;
 
-    final NiceAction ACTION_OPEN_JOIN_DIALOG = new NiceAction("Switch Room", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK)) {
+    private final NiceAction ACTION_OPEN_JOIN_DIALOG = new NiceAction("Switch Room", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK)) {
         @Override
         public void actionPerformed(ActionEvent e) {
             gameHandler.openJoinDialog(false);
         }
     };
 
-    final NiceAction ACTION_OPEN_SPECTATE_DIALOG = new NiceAction("Spectate Room", KeyEvent.VK_C, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK)) {
+    private final NiceAction ACTION_OPEN_SPECTATE_DIALOG = new NiceAction("Spectate Room", KeyEvent.VK_C, KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK)) {
         @Override
         public void actionPerformed(ActionEvent e) {
             gameHandler.openJoinDialog(true);
         }
     };
 
-    final NiceAction ACTION_PLAY_MATCH = new NiceAction("Play", KeyEvent.VK_P, KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK)) {
+    private final NiceAction ACTION_PLAY_MATCH = new NiceAction("Play", KeyEvent.VK_P, KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK)) {
         @Override
         public void actionPerformed(ActionEvent e) {
             gameHandler.join("matchme");
         }
     };
 
-    final NiceAction ACTION_START_GAME = new NiceAction("Start Game", KeyEvent.VK_SPACE, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_MASK)) {
+    private final NiceAction ACTION_START_GAME = new NiceAction("Start Game", KeyEvent.VK_SPACE, KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_MASK)) {
         @Override
         public void actionPerformed(ActionEvent e) {
             gameHandler.startGame();
         }
     };
 
-    final NiceAction ACTION_RESELECT_NODE = new NiceAction("Reselect Last Node", KeyEvent.VK_R, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK)) {
+    private final NiceAction ACTION_RESELECT_NODE = new NiceAction("Reselect Last Node", KeyEvent.VK_R, KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK)) {
         @Override
         public void actionPerformed(ActionEvent e) {
             mainPanel.selectLast();
         }
     };
 
-    final NiceAction ACTION_REATTACK_NODE = new NiceAction("Attack Last Node", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK)) {
+    private final NiceAction ACTION_REATTACK_NODE = new NiceAction("Attack Last Node", KeyEvent.VK_T, KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK)) {
         @Override
         public void actionPerformed(ActionEvent e) {
             mainPanel.attackLast();
         }
     };
 
-    final NiceAction ACTION_OPEN_DEBUG_DIALOG = new NiceAction("Open Debug Window", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0)) {
+    private final NiceAction ACTION_OPEN_DEBUG_DIALOG = new NiceAction("Open Debug Window", KeyEvent.VK_D, KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0)) {
         @Override
         public void actionPerformed(ActionEvent e) {
             gameHandler.openDebugDialog();
