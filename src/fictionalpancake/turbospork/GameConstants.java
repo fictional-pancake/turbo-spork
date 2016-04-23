@@ -21,4 +21,5 @@ public class GameConstants {
     public static int WIN_TEXT_SIZE = 10;
     public static double OUTLINE_SIZE = 0.5;
     public static int SPECTATING_TEXT_SIZE = 5;
+    public static int SMALL_TEXT_SIZE = 2;
 }

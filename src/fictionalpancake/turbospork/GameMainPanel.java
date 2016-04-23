@@ -17,6 +17,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     private Node selectedNode;
     private Node lastSelected;
     private Node lastAttacked;
+    private long lastPaint;
 
     public GameMainPanel(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
@@ -66,11 +67,16 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
                 drawStringCenter(g, lastWinner + " wins!", convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.FIELD_SIZE / 2));
             }
         }
+        g.setColor(Color.red);
         if(gameHandler.isSpectating()) {
-            g.setColor(Color.red);
             g.setFont(new Font("SansSerif", Font.PLAIN, convertSize(GameConstants.SPECTATING_TEXT_SIZE)));
             g.drawString("Spectating", convertX(0), convertY(100)-g.getFontMetrics().getDescent());
         }
+        g.setFont(new Font("SansSerif", Font.PLAIN, convertSize(GameConstants.SMALL_TEXT_SIZE)));
+        double fps = 1000/((double)(System.currentTimeMillis()-lastPaint));
+        String fpsText = ((int)fps)+" fps";
+        g.drawString(fpsText, convertX(0), convertY(0)+g.getFontMetrics().getAscent());
+        lastPaint = System.currentTimeMillis();
     }
 
     private Node getNodeUnderMouse() {
