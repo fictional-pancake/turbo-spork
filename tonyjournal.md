@@ -1,3 +1,19 @@
+###### 4/22/16
+We implemented most of the things I talked about in the last journal entry.
+Nodes still don't have unique properties, but I don't really think that's a
+priority. I am currently working on adding chat. The chat box will be
+displayed on the side panel next to the list of users. It will also be a
+JList, and messages will be colored by owner. I learned more about how laying
+things out works in order to put the chat box there and move other things
+around. Another thing I want to change soon is simplifying the code that checks
+for a win. Right now it is very complicated and also intertwined with code that
+does other things every game tick. I plan to change it so it looks at every
+UnitGroup in the game and checks who owns it. If they are all owned by one
+player, that player wins the game. Currently win conditions are inconsistent
+between players. I want to add spells to the game soon because I think they
+will make it much more interesting, and are probably more important than
+unique node properties.
+
 ###### 4/8/16
 This week the game became playable, although it isn't really fun and kind
 of sucks. It is now possible to move units between nodes as well as attack.
