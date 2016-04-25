@@ -3,7 +3,7 @@ package fictionalpancake.turbospork;
 import java.awt.*;
 
 public class GameConstants {
-    public static int PROTOCOL_VERSION = 8;
+    public static int PROTOCOL_VERSION = 9;
 
     public static int NODE_RADIUS = 5;
     public static double UNIT_RADIUS = 0.3;

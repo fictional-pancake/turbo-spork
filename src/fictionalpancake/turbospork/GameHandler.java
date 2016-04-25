@@ -161,6 +161,13 @@ public class GameHandler extends WebSocketClient {
                 int owner = Integer.parseInt(spl[1]);
                 node.takeUnits(owner, 1);
                 break;
+            case "chat":
+                System.out.println(data);
+                int colon = data.indexOf(":");
+                String user = data.substring(0, colon);
+                String message = data.substring(colon + 1);
+                roomInfoListener.onChat(user, message);
+                break;
             case "sync":
                 try {
                     syncDataComp.setText(data);
@@ -230,6 +237,10 @@ public class GameHandler extends WebSocketClient {
         send("join:" + newRoom);
     }
 
+    public void sendChat(String message) {
+        send("chat:" + message);
+    }
+
     public String getUserID() {
         return userID;
     }
@@ -264,8 +275,12 @@ public class GameHandler extends WebSocketClient {
         return lastWinner;
     }
 
+    public int getPosition(String username) {
+        return adjustForRemoved(users.indexOf(username));
+    }
+
     public int getPosition() {
-        return adjustForRemoved(users.indexOf(userID));
+        return getPosition(userID);
     }
 
     public int adjustForRemoved(int i) {

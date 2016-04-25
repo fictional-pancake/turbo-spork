@@ -3,6 +3,7 @@ package fictionalpancake.turbospork;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class GameWindow extends JPanel {
@@ -112,12 +113,15 @@ public class GameWindow extends JPanel {
         }
     }
 
-    private class RoomInfoPanel extends JPanel implements RoomInfoListener {
+    private class RoomInfoPanel extends JPanel implements RoomInfoListener, ActionListener {
         private JList<String> userList;
+        private JList<ChatMessage> chatList;
+        private JTextField chatMessage;
         private JButton joinBtn;
         private JButton startBtn;
         private JButton matchBtn;
         private JPanel topPanel;
+        private JPanel bottomPanel;
         private GameHandler gameHandler;
         private GameWindow gameWindow;
 
@@ -126,20 +130,40 @@ public class GameWindow extends JPanel {
             this.gameHandler = gameHandler;
             gameHandler.setRoomInfoListener(this);
             setLayout(new BorderLayout());
-            userList = new JList<String>(new DefaultListModel<String>());
-            userList.setCellRenderer(new UserListCellRenderer());
-            add(userList, BorderLayout.CENTER);
             topPanel = new JPanel();
-            topPanel.setLayout(new GridLayout(2, 1));
+            topPanel.setLayout(new GridLayout(3, 1));
             joinBtn = new JButton(ACTION_OPEN_JOIN_DIALOG);
-            matchBtn = new JButton(ACTION_PLAY_MATCH);
             topPanel.add(joinBtn);
+            matchBtn = new JButton(ACTION_PLAY_MATCH);
             topPanel.add(matchBtn);
-            add(topPanel, BorderLayout.NORTH);
             startBtn = new JButton(ACTION_START_GAME);
             startBtn.setEnabled(false);
-            add(startBtn, BorderLayout.SOUTH);
+            topPanel.add(startBtn);
+            add(topPanel, BorderLayout.NORTH);
+            bottomPanel = new JPanel();
+            bottomPanel.setLayout(new GridLayout(2,1));
+            userList = new JList<String>(new DefaultListModel<String>());
+            userList.setCellRenderer(new UserListCellRenderer());
+            bottomPanel.add(userList);
+            chatList = new JList<ChatMessage>(new DefaultListModel<ChatMessage>());
+            chatList.setCellRenderer(new ChatListCellRenderer());
+            bottomPanel.add(chatList);
+            add(bottomPanel, BorderLayout.CENTER);
+            chatMessage = new JTextField();
+            chatMessage.addActionListener(this);
+            add(chatMessage, BorderLayout.SOUTH);
             gameWindow.updateActionState();
+        }
+
+        @Override
+        public void onChat(String user, String message) {
+            ((DefaultListModel<ChatMessage>) chatList.getModel()).addElement(new ChatMessage(user, message));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            gameHandler.sendChat(chatMessage.getText());
+            chatMessage.setText("");
         }
 
         @Override
@@ -166,6 +190,20 @@ public class GameWindow extends JPanel {
         @Override
         public void onGameEnd() {
             gameWindow.updateActionState();
+        }
+
+        private class ChatListCellRenderer extends DefaultListCellRenderer {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component tr = super.getListCellRendererComponent(list, value, index, gameHandler.adjustForRemoved(index) == gameHandler.getPosition(), false);
+                Color userColor = Color.black;
+                int userPosition = gameHandler.getPosition(((ChatMessage) value).getUser());
+                if (userPosition != -1) {
+                    userColor = TurboSpork.getColorForOwner(userPosition);
+                }
+                tr.setForeground(userColor);
+                return tr;
+            }
         }
 
         private class UserListCellRenderer extends DefaultListCellRenderer {

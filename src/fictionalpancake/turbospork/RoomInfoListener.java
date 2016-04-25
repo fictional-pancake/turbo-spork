@@ -8,4 +8,6 @@ public interface RoomInfoListener {
     void onGameStart();
 
     void onGameEnd();
+
+    void onChat(String user, String message);
 }
