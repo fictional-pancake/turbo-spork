@@ -10,6 +10,7 @@ public class GameWindow extends JPanel {
 
     private GameHandler gameHandler;
     private GameMainPanel mainPanel;
+    private RoomInfoPanel roomPanel;
 
     private final NiceAction ACTION_OPEN_JOIN_DIALOG = new NiceAction("Switch Room", KeyEvent.VK_O, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK)) {
         @Override
@@ -63,8 +64,8 @@ public class GameWindow extends JPanel {
     public GameWindow(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
         setLayout(new BorderLayout());
-        RoomInfoPanel leftPanel = new RoomInfoPanel(this, gameHandler);
-        add(leftPanel, BorderLayout.WEST);
+        roomPanel = new RoomInfoPanel(this, gameHandler);
+        add(roomPanel, BorderLayout.WEST);
         mainPanel = new GameMainPanel(gameHandler);
         add(mainPanel, BorderLayout.CENTER);
         new Thread(new RepaintThread(mainPanel)).start();
@@ -155,6 +156,18 @@ public class GameWindow extends JPanel {
             gameWindow.updateActionState();
         }
 
+        public JTextField getChatField() {
+            return chatMessage;
+        }
+
+        public void setChatEnabled(boolean enabled) {
+            roomPanel.getChatField().setEnabled(enabled);
+        }
+
+        public void clearChat() {
+            ((DefaultListModel<ChatMessage>) chatList.getModel()).clear();
+        }
+
         @Override
         public void onChat(String user, String message) {
             ((DefaultListModel<ChatMessage>) chatList.getModel()).addElement(new ChatMessage(user, message));
@@ -170,6 +183,8 @@ public class GameWindow extends JPanel {
         public void onLeftRoom(String id) {
             if (id.equals(gameHandler.getUserID())) {
                 ((DefaultListModel<String>) userList.getModel()).removeAllElements();
+                clearChat();
+                setChatEnabled(false);
             } else {
                 ((DefaultListModel<String>) userList.getModel()).removeElement(id);
             }
@@ -180,6 +195,8 @@ public class GameWindow extends JPanel {
         public void onJoinedRoom(String id) {
             ((DefaultListModel<String>) userList.getModel()).addElement(id);
             gameWindow.updateActionState();
+            clearChat();
+            setChatEnabled(true);
         }
 
         @Override
