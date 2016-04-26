@@ -162,7 +162,6 @@ public class GameHandler extends WebSocketClient {
                 node.takeUnits(owner, 1);
                 break;
             case "chat":
-                System.out.println(data);
                 int colon = data.indexOf(":");
                 String user = data.substring(0, colon);
                 String message = data.substring(colon + 1);

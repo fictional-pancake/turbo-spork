@@ -1,10 +1,9 @@
 package fictionalpancake.turbospork;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
 public class GameWindow extends JPanel {
 
@@ -114,9 +113,10 @@ public class GameWindow extends JPanel {
         }
     }
 
-    private class RoomInfoPanel extends JPanel implements RoomInfoListener, ActionListener {
+    private class RoomInfoPanel extends JPanel implements RoomInfoListener, ActionListener, AdjustmentListener {
         private JList<String> userList;
         private JList<ChatMessage> chatList;
+        private JScrollPane chatPane;
         private JTextField chatMessage;
         private JButton joinBtn;
         private JButton startBtn;
@@ -125,6 +125,7 @@ public class GameWindow extends JPanel {
         private JPanel bottomPanel;
         private GameHandler gameHandler;
         private GameWindow gameWindow;
+        private int width = 150;
 
         public RoomInfoPanel(GameWindow gameWindow, GameHandler gameHandler) {
             this.gameWindow = gameWindow;
@@ -148,7 +149,12 @@ public class GameWindow extends JPanel {
             bottomPanel.add(userList);
             chatList = new JList<ChatMessage>(new DefaultListModel<ChatMessage>());
             chatList.setCellRenderer(new ChatListCellRenderer());
-            bottomPanel.add(chatList);
+            chatList.setFixedCellWidth(width);
+            chatPane = new JScrollPane(chatList);
+            chatPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            chatPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+            chatPane.getVerticalScrollBar().addAdjustmentListener(this);
+            bottomPanel.add(chatPane);
             add(bottomPanel, BorderLayout.CENTER);
             chatMessage = new JTextField();
             chatMessage.addActionListener(this);
@@ -209,10 +215,29 @@ public class GameWindow extends JPanel {
             gameWindow.updateActionState();
         }
 
+        @Override
+        public void adjustmentValueChanged(AdjustmentEvent e) {
+            e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+        }
+
         private class ChatListCellRenderer extends DefaultListCellRenderer {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component tr = super.getListCellRendererComponent(list, value, index, false, false);
+                JTextArea tr = new JTextArea();
+                tr.setText(value.toString());
+                tr.setLineWrap(true);
+                tr.setWrapStyleWord(true);
+                tr.setColumns(50);
+                Dimension d = new Dimension(list.getFixedCellWidth(), tr.getPreferredSize().height);
+                tr.setPreferredSize(d);
+                tr.setSize(d);
+                try {
+                    Rectangle r = tr.modelToView(tr.getDocument().getLength());
+                    tr.setPreferredSize(new Dimension(d.width, r.y+r.height));
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+                /*JLabel tr = new JLabel("<html><body style=\"width: "+(list.getFixedCellWidth()-50)+"px\">"+value.toString());*/
                 Color userColor = Color.black;
                 int userPosition = gameHandler.getPosition(((ChatMessage) value).getUser());
                 if (userPosition != -1) {
