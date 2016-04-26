@@ -195,7 +195,7 @@ public class GameWindow extends JPanel {
         private class ChatListCellRenderer extends DefaultListCellRenderer {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                Component tr = super.getListCellRendererComponent(list, value, index, gameHandler.adjustForRemoved(index) == gameHandler.getPosition(), false);
+                Component tr = super.getListCellRendererComponent(list, value, index, false, false);
                 Color userColor = Color.black;
                 int userPosition = gameHandler.getPosition(((ChatMessage) value).getUser());
                 if (userPosition != -1) {

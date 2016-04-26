@@ -15,6 +15,7 @@ public class LoginWindow extends JPanel implements ActionListener {
     private JTextField username;
     private JPasswordField password;
     private JButton loginButton;
+    private JButton guestButton;
     private JProgressBar bar;
     private JLabel errorLabel;
     private JComboBox<String> uriBox;
@@ -45,6 +46,14 @@ public class LoginWindow extends JPanel implements ActionListener {
         GridBagConstraints buttonConstraints = new GridBagConstraints();
         buttonConstraints.gridx = 2;
         buttonConstraints.gridy = 5;
+        buttonConstraints.fill = GridBagConstraints.HORIZONTAL;
+
+        guestButton = new JButton("Play as Guest");
+        guestButton.addActionListener(this);
+        GridBagConstraints guestConstraints = new GridBagConstraints();
+        guestConstraints.gridx = 0;
+        guestConstraints.gridy = 5;
+        guestConstraints.fill = GridBagConstraints.HORIZONTAL;
 
         bar = new JProgressBar();
         bar.setVisible(false);
@@ -71,6 +80,7 @@ public class LoginWindow extends JPanel implements ActionListener {
         add(bar, progressConstraints);
         add(errorLabel, labelConstraints);
         add(uriBox, boxConstraints);
+        add(guestButton, guestConstraints);
     }
 
     public static JFrame open(String[] credentials, String uri) {
@@ -96,7 +106,7 @@ public class LoginWindow extends JPanel implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         errorLabel.setText("");
         username.setEnabled(false);
         password.setEnabled(false);
@@ -139,7 +149,12 @@ public class LoginWindow extends JPanel implements ActionListener {
                 }, uri);
                 try {
                     gh.connectBlocking();
-                    gh.send("auth:" + username.getText() + ":" + String.valueOf(password.getPassword()) + ":" + GameConstants.PROTOCOL_VERSION);
+                    String authMsg = "auth:";
+                    if(e.getSource() != guestButton) {
+                        authMsg += username.getText() + ":" + String.valueOf(password.getPassword()) + ":";
+                    }
+                    authMsg += GameConstants.PROTOCOL_VERSION;
+                    gh.send(authMsg);
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                     System.exit(-2);
