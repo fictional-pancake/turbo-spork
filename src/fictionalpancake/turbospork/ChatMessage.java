@@ -1,8 +1,8 @@
 package fictionalpancake.turbospork;
 
 public class ChatMessage {
-    String user;
-    String message;
+    private String user;
+    private String message;
 
     public ChatMessage(String ownerName, String message) {
         this.user = ownerName;
