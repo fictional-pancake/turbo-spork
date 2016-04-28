@@ -141,7 +141,7 @@
 	running the whole client twice, since my computer
 	is really bad at that.
 
-4/16/15:
+4/16/16:
 	A lot of stuff happened this week.  We got some
 	playtesting in so we could find issues, and we
 	found issues.  If a player left during a match,
@@ -168,7 +168,7 @@
 	automatically deploy code to the test server
 	and build a client jar whenever we commit.
 
-4/23/15:
+4/23/16:
 	stupidclient.js now has stupid AI.  Originally,
 	it just spammed the server with attack commands,
 	but that just caused chaos, retreating, and FPS
@@ -189,3 +189,24 @@
 	Unfortunately, that made the form data have a
 	different format, so I added the multiparty
 	module to parse it and used form-data to test it.
+
+4/28/16:
+	This week we implemented chat.  It's pretty
+	simple, but swing doesn't make it easy to make
+	things lay out the way I want them to.  Long
+	messages caused the sidebar to extend, and even
+	longer messages could completely obscure the game
+	area.  If enough messages were sent, they wouldn't
+	show up because they would overflow the container.
+	I think it's all fixed now.  I replaced the
+	JLabels in the chat list with JTextAreas, but then
+	long messages would be partially covered by
+	subsequent messages.  I ended up doing weird
+	things with sizes, and somehow it works now.  I
+	put the chat area in a JScrollPane so you could
+	scroll, but the scrollbar would cover part of the
+	message and it didn't autoscroll.  I set it to
+	hide the scrollbar and stay scrolled to the
+	bottom, which I guess is good enough.  I rewrote
+	the tests so they make more sense, but now they
+	have tons of nested functions.
