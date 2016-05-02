@@ -1,3 +1,22 @@
+###### 4/29/16
+We've finished simplifying win detection. It now looks through every UnitGroup
+and every node and if they both belong entirely to one player, that player
+wins. It turns out that just looking at UnitGroups doesn't work because the
+server only counts moving units as being UnitGroups. Chat is finished now.
+When I first wrote it a long message would just cause the chat panel to
+expand and cover the game panel, so we changed it to wrap the text instead.
+The next thing I'm working on is a delay after the start game button is
+pressed so the person who starts the game doesn't get an advantage. Some sort
+of countdown would be ideal. I tried just running some wait function in the
+client's startGame method, but awt had some error that I didn't understand.
+I added a start delay to GameConstants that is sent to the server with
+the gamestart command and the server waits that long before sending data back
+to the client. It caused a NullPointerException in the method that uses all
+the game data sent back from the server, so I assume it expected data when
+none had been sent yet. I haven't figured out how to fix this yet. After I
+finish that I want to work on spells, which should be weird and difficult to
+implement.
+
 ###### 4/22/16
 We implemented most of the things I talked about in the last journal entry.
 Nodes still don't have unique properties, but I don't really think that's a
