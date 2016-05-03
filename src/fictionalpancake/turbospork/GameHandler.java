@@ -11,6 +11,8 @@ import java.util.*;
 
 public class GameHandler extends WebSocketClient {
 
+    private boolean gameReady;
+    private boolean gameStarted;
     private DataListener<String> firstMessageListener;
     private RoomInfoListener roomInfoListener;
     private String newRoom;
@@ -28,6 +30,7 @@ public class GameHandler extends WebSocketClient {
 
     public GameHandler(DataListener<String> firstMessageListener, URI uri) {
         super(uri);
+        gameStarted = false;
         this.firstMessageListener = firstMessageListener;
         users = new ArrayList<String>();
         syncDataComp = new JTextArea();
@@ -77,7 +80,10 @@ public class GameHandler extends WebSocketClient {
     }
 
     public void handleMessage(String command, String data) {
-        String[] spl = data.split(",");
+        String[] spl = new String[]{};
+        if (data != null) {
+            spl = data.split(",");
+        }
         switch (command) {
             case "leave":
                 if (data.equals(userID)) {
@@ -85,7 +91,7 @@ public class GameHandler extends WebSocketClient {
                     users.clear();
                     reset();
                 } else {
-                    if (isInProgress()) {
+                    if (hasGameData()) {
                         removed.add(users.indexOf(data));
                     }
                     users.remove(data);
@@ -114,7 +120,7 @@ public class GameHandler extends WebSocketClient {
                     JOptionPane.showMessageDialog(null, data, "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 break;
-            case "gamestart":
+            case "gameinfo":
                 try {
                     Map map = (Map) jsonParser.parse(data);
                     List<Map> nodeInfo = (List<Map>) map.get("nodes");
@@ -124,12 +130,16 @@ public class GameHandler extends WebSocketClient {
                     for (Map currentNodeInfo : nodeInfo) {
                         nodes.add(new Node(currentNodeInfo));
                     }
+                    gameReady = true;
                     if (roomInfoListener != null) {
                         roomInfoListener.onGameStart();
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                break;
+            case "gamestart":
+                gameStarted = true;
                 break;
             case "send":
                 try {
@@ -203,6 +213,8 @@ public class GameHandler extends WebSocketClient {
         nodes = null;
         groups = null;
         removed = null;
+        gameReady = false;
+        gameStarted = false;
     }
 
     @Override
@@ -252,7 +264,13 @@ public class GameHandler extends WebSocketClient {
         send("gamestart");
     }
 
+    public boolean isGameReady() { return gameReady; }
+
     public boolean isInProgress() {
+        return gameStarted;
+    }
+
+    public boolean hasGameData() {
         return nodes != null;
     }
 

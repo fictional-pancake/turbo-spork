@@ -3,7 +3,7 @@ package fictionalpancake.turbospork;
 import java.awt.*;
 
 public class GameConstants {
-    public static int PROTOCOL_VERSION = 10;
+    public static int PROTOCOL_VERSION = 11;
 
     public static int NODE_RADIUS = 5;
     public static double UNIT_RADIUS = 0.3;
@@ -19,6 +19,7 @@ public class GameConstants {
             Color.orange
     };
     public static int WIN_TEXT_SIZE = 10;
+    public static int GAMEREADY_TEXT_SIZE = 7;
     public static double OUTLINE_SIZE = 0.5;
     public static int SPECTATING_TEXT_SIZE = 5;
     public static int SMALL_TEXT_SIZE = 2;

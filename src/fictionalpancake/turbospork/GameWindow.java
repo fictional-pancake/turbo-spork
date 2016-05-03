@@ -109,7 +109,7 @@ public class GameWindow extends JPanel {
             ACTION_OPEN_JOIN_DIALOG.setName("Switch Room");
             String leader = list.get(0);
             String userID = gameHandler.getUserID();
-            ACTION_START_GAME.setEnabled(leader.equals(userID) && !gameHandler.isInProgress() && !gameHandler.isMatchMeRoom());
+            ACTION_START_GAME.setEnabled(leader.equals(userID) && !gameHandler.hasGameData() && !gameHandler.isMatchMeRoom());
         }
     }
 
