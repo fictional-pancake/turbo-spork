@@ -11,7 +11,6 @@ import java.util.*;
 
 public class GameHandler extends WebSocketClient {
 
-    private boolean gameReady;
     private boolean gameStarted;
     private DataListener<String> firstMessageListener;
     private RoomInfoListener roomInfoListener;
@@ -130,7 +129,6 @@ public class GameHandler extends WebSocketClient {
                     for (Map currentNodeInfo : nodeInfo) {
                         nodes.add(new Node(currentNodeInfo));
                     }
-                    gameReady = true;
                     if (roomInfoListener != null) {
                         roomInfoListener.onGameStart();
                     }
@@ -213,7 +211,6 @@ public class GameHandler extends WebSocketClient {
         nodes = null;
         groups = null;
         removed = null;
-        gameReady = false;
         gameStarted = false;
     }
 
@@ -263,8 +260,6 @@ public class GameHandler extends WebSocketClient {
     public void startGame() {
         send("gamestart");
     }
-
-    public boolean isGameReady() { return gameReady; }
 
     public boolean isInProgress() {
         return gameStarted;

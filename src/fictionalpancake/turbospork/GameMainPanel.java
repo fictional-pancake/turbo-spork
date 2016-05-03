@@ -77,7 +77,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
         String fpsText = ((int)fps)+" fps";
         g.drawString(fpsText, convertX(0), convertY(0)+g.getFontMetrics().getAscent());
         // draw game start message
-        if (gameHandler.isGameReady() && !gameHandler.isInProgress()) {
+        if (gameHandler.hasGameData() && !gameHandler.isInProgress()) {
             g.setColor(Color.red);
             g.setFont(new Font("SansSerif", Font.ITALIC, convertSize(GameConstants.GAMEREADY_TEXT_SIZE)));
             drawStringCenter(g, "Game starting soon", convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.FIELD_SIZE / 2));
