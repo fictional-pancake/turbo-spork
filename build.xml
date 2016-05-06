@@ -23,6 +23,12 @@
             <zipgroupfileset dir="lib" includes="*.jar"/>
         </jar>
     </target>
+    <target name="basejar" depends="compile">
+        <mkdir dir="${dist}"/>
+        <jar jarfile="${dist}/turbo-spork-base.jar" basedir="${classes}" excludes="**/gui/">
+            <zipgroupfileset dir="lib" includes="*.jar"/>
+        </jar>
+    </target>
     <target name="compileTest" depends="compile">
         <mkdir dir="${testClasses}"/>
         <javac srcdir="test/src" destdir="${testClasses}">
