@@ -17,12 +17,12 @@ public class UnitGroup {
 
     public UnitGroup(Map map, GameHandler gameHandler) {
         List<Node> nodes = gameHandler.getNodes();
-        source = nodes.get(TurboSpork.toInt(map.get("source")));
-        dest = nodes.get(TurboSpork.toInt(map.get("dest")));
-        duration = TurboSpork.toInt(map.get("duration"));
-        units = TurboSpork.toInt(map.get("size"));
-        owner = TurboSpork.toInt(map.get("owner"));
-        id = TurboSpork.toInt(map.get("id"));
+        source = nodes.get(MathHelper.toInt(map.get("source")));
+        dest = nodes.get(MathHelper.toInt(map.get("dest")));
+        duration = MathHelper.toInt(map.get("duration"));
+        units = MathHelper.toInt(map.get("size"));
+        owner = MathHelper.toInt(map.get("owner"));
+        id = MathHelper.toInt(map.get("id"));
         start = System.currentTimeMillis();
 
         xVel = ((double) (dest.getX() - source.getX())) / duration;

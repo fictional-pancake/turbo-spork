@@ -1,4 +1,8 @@
-package fictionalpancake.turbospork;
+package fictionalpancake.turbospork.gui;
+
+import fictionalpancake.turbospork.DataListener;
+import fictionalpancake.turbospork.GameConstants;
+import fictionalpancake.turbospork.GameHandler;
 
 import javax.swing.*;
 import java.awt.*;

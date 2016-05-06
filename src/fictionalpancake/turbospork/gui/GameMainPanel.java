@@ -1,4 +1,6 @@
-package fictionalpancake.turbospork;
+package fictionalpancake.turbospork.gui;
+
+import fictionalpancake.turbospork.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,7 +42,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
             int d = convertSize(GameConstants.NODE_RADIUS * 2);
             for (int i = 0; i < nodes.size(); i++) {
                 node = nodes.get(i);
-                g.setColor(TurboSpork.getColorForOwner(node.getOwner()));
+                g.setColor(MathHelper.getColorForOwner(node.getOwner()));
                 g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), d, d);
                 drawNodeUnits(g, node);
             }
@@ -103,7 +105,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
         Random rand2 = new Random(seed2);
 
         int diameter = convertSize(GameConstants.UNIT_RADIUS * 2);
-        Color color = TurboSpork.getColorForOwner(owner).darker();
+        Color color = MathHelper.getColorForOwner(owner).darker();
         for (int j = 0; j < numUnits; j++) {
             Point coords1 = getRandomUnitCoords(rand1, x, y);
             Point coords2 = getRandomUnitCoords(rand2, x, y);
@@ -189,7 +191,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     }
 
     private boolean isMouseOverNode(Node node) {
-        return TurboSpork.distance(mouseX, mouseY, convertX(node.getX()), convertY(node.getY())) <= convertSize(GameConstants.NODE_RADIUS);
+        return MathHelper.distance(mouseX, mouseY, convertX(node.getX()), convertY(node.getY())) <= convertSize(GameConstants.NODE_RADIUS);
     }
 
     @Override

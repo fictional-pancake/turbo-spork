@@ -10,4 +10,6 @@ public interface RoomInfoListener {
     void onGameEnd();
 
     void onChat(String user, String message);
+
+    void onError(String error);
 }

@@ -16,11 +16,11 @@ public class Node {
     private long lastUnitCheck;
 
     public Node(Map map) {
-        x = TurboSpork.toInt(map.get("x"));
-        y = TurboSpork.toInt(map.get("y"));
-        setOwner(TurboSpork.toInt(map.get("owner")));
-        generationTime = TurboSpork.toInt(map.get("generationTime"));
-        unitCap = TurboSpork.toInt(map.get("unitCap"));
+        x = MathHelper.toInt(map.get("x"));
+        y = MathHelper.toInt(map.get("y"));
+        setOwner(MathHelper.toInt(map.get("owner")));
+        generationTime = MathHelper.toInt(map.get("generationTime"));
+        unitCap = MathHelper.toInt(map.get("unitCap"));
         unitSpeed = (double) map.get("unitSpeed");
         units = new HashMap<>();
         lastUnitCheck = System.currentTimeMillis();
@@ -129,7 +129,7 @@ public class Node {
     }
 
     public void sync(Map curNodeData) {
-        int owner = TurboSpork.toInt(curNodeData.get("owner"));
+        int owner = MathHelper.toInt(curNodeData.get("owner"));
         if (getOwner() != owner) {
             setOwner(owner);
         }
@@ -137,7 +137,7 @@ public class Node {
             units.clear();
             Map unitMap = (Map) curNodeData.get("units");
             for (Object i : unitMap.keySet()) {
-                units.put(TurboSpork.toInt(i), TurboSpork.toInt(unitMap.get(i)));
+                units.put(MathHelper.toInt(i), MathHelper.toInt(unitMap.get(i)));
             }
         }
     }

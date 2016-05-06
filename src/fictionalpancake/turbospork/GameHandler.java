@@ -1,11 +1,11 @@
 package fictionalpancake.turbospork;
 
+import fictionalpancake.turbospork.gui.GameWindow;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.swing.*;
 import java.net.URI;
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class GameHandler extends WebSocketClient {
     private List<UnitGroup> groups;
     private List<String> users;
     private List<Integer> removed;
-    private JTextArea syncDataComp;
+    private DataListener<String> syncDataListener;
 
     private JSONParser jsonParser = new JSONParser();
 
@@ -32,9 +32,6 @@ public class GameHandler extends WebSocketClient {
         gameStarted = false;
         this.firstMessageListener = firstMessageListener;
         users = new ArrayList<String>();
-        syncDataComp = new JTextArea();
-        syncDataComp.setEditable(false);
-        syncDataComp.setLineWrap(true);
 
         new Thread(new Runnable() {
             @Override
@@ -115,8 +112,8 @@ public class GameHandler extends WebSocketClient {
                 }
                 break;
             case "error":
-                if (userID != null) {
-                    JOptionPane.showMessageDialog(null, data, "Error", JOptionPane.ERROR_MESSAGE);
+                if (userID != null && roomInfoListener != null) {
+                    roomInfoListener.onError(data);
                 }
                 break;
             case "gameinfo":
@@ -177,7 +174,9 @@ public class GameHandler extends WebSocketClient {
                 break;
             case "sync":
                 try {
-                    syncDataComp.setText(data);
+                    if (syncDataListener != null) {
+                        syncDataListener.onData(data);
+                    }
                     Map map = (Map) jsonParser.parse(data);
                     List<Map> nodeData = ((List<Map>) map.get("nodes"));
                     List<Node> nodes = getNodes();
@@ -193,7 +192,7 @@ public class GameHandler extends WebSocketClient {
                         UnitGroup group = it.next();
                         String id = group.getID() + "";
                         if (groupMap.containsKey(id)) {
-                            group.setUnits(TurboSpork.toInt(groupMap.get(id)));
+                            group.setUnits(MathHelper.toInt(groupMap.get(id)));
                         } else {
                             it.remove();
                         }
@@ -225,19 +224,6 @@ public class GameHandler extends WebSocketClient {
     @Override
     public void onError(Exception e) {
         e.printStackTrace();
-    }
-
-    public void openJoinDialog(boolean spectate) {
-        if (firstMessageListener == null) {
-            String toJoin = JOptionPane.showInputDialog("Room to " + (spectate ? "spectate" : "join") + "?", "");
-            if (toJoin != null) {
-                if (spectate) {
-                    send("spectate:"+toJoin);
-                } else join(toJoin);
-            } else {
-                send("leave");
-            }
-        }
     }
 
     public void join(String s) {
@@ -331,14 +317,15 @@ public class GameHandler extends WebSocketClient {
         return users;
     }
 
-    public void openDebugDialog() {
-        JFrame dialog = new JFrame();
-        dialog.add(syncDataComp);
-        dialog.setSize(500, 200);
-        dialog.setVisible(true);
-    }
-
     public boolean isSpectating() {
         return !getUsers().isEmpty() && getPosition() == -1;
+    }
+
+    public void spectate(String s) {
+        send("spectate:"+s);
+    }
+
+    public void setSyncDataListener(DataListener<String> syncDataListener) {
+        this.syncDataListener = syncDataListener;
     }
 }

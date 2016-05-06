@@ -1,1 +1,1 @@
-Main-Class: fictionalpancake.turbospork.TurboSpork
+Main-Class: fictionalpancake.turbospork.gui.TurboSpork
