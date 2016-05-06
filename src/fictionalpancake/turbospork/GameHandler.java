@@ -322,7 +322,7 @@ public class GameHandler extends WebSocketClient {
     }
 
     public void spectate(String s) {
-        send("spectate:"+s);
+        send("spectate:" + s);
     }
 
     public void setSyncDataListener(DataListener<String> syncDataListener) {

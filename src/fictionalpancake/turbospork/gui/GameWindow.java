@@ -271,7 +271,7 @@ public class GameWindow extends JPanel implements DataListener<String> {
                 Color userColor = Color.black;
                 int userPosition = gameHandler.getPosition(((ChatMessage) value).getUser());
                 if (userPosition != -1) {
-                    userColor = MathHelper.getColorForOwner(userPosition);
+                    userColor = GameColors.getColorForOwner(userPosition);
                 }
                 tr.setForeground(userColor);
                 return tr;
@@ -282,7 +282,7 @@ public class GameWindow extends JPanel implements DataListener<String> {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component tr = super.getListCellRendererComponent(list, value, index, gameHandler.adjustForRemoved(index) == gameHandler.getPosition(), false);
-                tr.setForeground(MathHelper.getColorForOwner(gameHandler.adjustForRemoved(index)));
+                tr.setForeground(GameColors.getColorForOwner(gameHandler.adjustForRemoved(index)));
                 return tr;
             }
         }
