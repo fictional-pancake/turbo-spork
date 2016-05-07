@@ -1,5 +1,6 @@
 package fictionalpancake.turbospork;
 
+import fictionalpancake.turbospork.gui.GameColors;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public class NodeTest {
     public void testLoadFromMap() {
         long x = new Random().nextInt(100);
         long y = new Random().nextInt(100);
-        long owner = new Random().nextInt(GameConstants.COLORS.length);
+        long owner = new Random().nextInt(GameColors.COLORS.length);
         long generationTime = new Random().nextInt(10000);
         long unitCap = new Random().nextInt(1000);
         double unitSpeed = new Random().nextDouble();
