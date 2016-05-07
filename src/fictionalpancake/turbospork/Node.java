@@ -119,13 +119,15 @@ public class Node {
     }
 
     public List<Integer> getUnitOwners() {
-        List<Integer> tr = new ArrayList<>();
-        for (int owner : units.keySet()) {
-            if (getUnits(owner) > 0) {
-                tr.add(owner);
+        synchronized(units) {
+            List<Integer> tr = new ArrayList<>();
+            for (int owner : units.keySet()) {
+                if (getUnits(owner) > 0) {
+                    tr.add(owner);
+                }
             }
+            return tr;
         }
-        return tr;
     }
 
     public void sync(Map curNodeData) {

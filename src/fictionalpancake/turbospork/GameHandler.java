@@ -140,7 +140,9 @@ public class GameHandler extends WebSocketClient {
                 try {
                     Map map = (Map) jsonParser.parse(data);
                     UnitGroup newGroup = new UnitGroup(map, this);
-                    groups.add(newGroup);
+                    synchronized(groups) {
+                        groups.add(newGroup);
+                    }
                     int taken = 0;
                     int toTake = newGroup.getUnits();
                     taken += newGroup.getSource().takeUnits(newGroup.getOwner(), toTake);
@@ -187,14 +189,16 @@ public class GameHandler extends WebSocketClient {
                     }
                     Map<String, Long> groupMap = ((Map<String, Long>) map.get("groups"));
                     List<UnitGroup> groups = getUnitGroups();
-                    Iterator<UnitGroup> it = groups.iterator();
-                    while (it.hasNext()) {
-                        UnitGroup group = it.next();
-                        String id = group.getID() + "";
-                        if (groupMap.containsKey(id)) {
-                            group.setUnits(MathHelper.toInt(groupMap.get(id)));
-                        } else {
-                            it.remove();
+                    synchronized(groups) {
+                        Iterator<UnitGroup> it = groups.iterator();
+                        while (it.hasNext()) {
+                            UnitGroup group = it.next();
+                            String id = group.getID() + "";
+                            if (groupMap.containsKey(id)) {
+                                group.setUnits(MathHelper.toInt(groupMap.get(id)));
+                            } else {
+                                it.remove();
+                            }
                         }
                     }
                 } catch (ParseException e) {
@@ -257,12 +261,14 @@ public class GameHandler extends WebSocketClient {
 
     public List<Node> getNodes() {
         if (groups != null) {
-            Iterator<UnitGroup> it = groups.iterator();
-            while (it.hasNext()) {
-                UnitGroup group = it.next();
-                if (group.isComplete()) {
-                    it.remove();
-                    group.getDest().addUnits(group.getOwner(), group.getUnits());
+            synchronized(groups) {
+                Iterator<UnitGroup> it = groups.iterator();
+                while (it.hasNext()) {
+                    UnitGroup group = it.next();
+                    if (group.isComplete()) {
+                        it.remove();
+                        group.getDest().addUnits(group.getOwner(), group.getUnits());
+                    }
                 }
             }
         }
