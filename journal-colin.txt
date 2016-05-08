@@ -210,3 +210,23 @@
 	bottom, which I guess is good enough.  I rewrote
 	the tests so they make more sense, but now they
 	have tons of nested functions.
+
+5/7/16:
+	This week we discussed the possibility of adding
+	spells.  I think the current plan is to sacrifice
+	units for energy that can be used to cast spells
+	from a set along the bottom of the page.  I also
+	added a simple "How to Play" page to the server
+	and added support for serving arbitrary files to
+	support that.  I wrote an Android client, so it's
+	a mobile game now.  I moved all the GUI related
+	classes to a new package so I could take the rest
+	and include them in the app.  That helped a lot,
+	since that meant I only had to reimplement GUIs,
+	not the whole game.  If we ever need to support
+	another platform, it won't be that easy.  I've
+	noticed it's difficult to diagnose Android
+	crashes, since they only show up in the device
+	log that also has warnings and errors from every
+	other app on the device, and sometimes the error
+	doesn't seem to show up at all.
