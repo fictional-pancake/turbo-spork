@@ -1,3 +1,20 @@
+###### 5/6/16
+This week we are starting to implement spells. We came up with a couple ideas
+for spells we could potentially implement, including a "turbo spork" that
+kills random units, which would be pretty hard to balance. One we are
+actually implementing is a spell to freeze a node temporarily and prevent
+anything from happening on that node while it is frozen. Another would
+temporarily speed up the unit production of a friendly node. I am working on
+the freezing a node one right now. I can't actually do the whole thing because
+we haven't written support for spells in the first place yet. We are thinking
+that there will be some spot (probably a node) where you can send units to be
+sacrificed, and each unit that dies gives you 1 energy. Energy would be used
+to cast spells, instead of some other method of limiting casts like cooldowns.
+This node will probably be either in the middle of the map or the bottom center
+so that no player is closer to it than the other. Still, on unfair maps, it
+might be easier for one player to send units than the other, which could be a
+slight problem.
+
 ###### 4/29/16
 We've finished simplifying win detection. It now looks through every UnitGroup
 and every node and if they both belong entirely to one player, that player
