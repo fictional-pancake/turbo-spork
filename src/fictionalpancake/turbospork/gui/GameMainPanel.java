@@ -40,10 +40,14 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
         if (nodes != null && groups != null) {
             Node node;
             int d = convertSize(GameConstants.NODE_RADIUS * 2);
+            int stasisdist = convertSize(GameConstants.STASIS_FIELD_RADIUS * 2);
             for (int i = 0; i < nodes.size(); i++) {
                 node = nodes.get(i);
                 g.setColor(GameColors.getColorForOwner(node.getOwner()));
                 g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), d, d);
+                if (node.isFrozen()) {
+                    g.drawOval(convertX(node.getX() - GameConstants.STASIS_FIELD_RADIUS), convertY(node.getY() - GameConstants.STASIS_FIELD_RADIUS), stasisdist, stasisdist);
+                }
                 drawNodeUnits(g, node);
             }
             g.setStroke(outlineStroke);
@@ -230,7 +234,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     public void select(Node node) {
         if (selectedNode == null && node != null && gameHandler.isInProgress()) {
             int pos = gameHandler.getPosition();
-            if ((pos != -1 && pos == node.getOwner()) || node.getUnits(pos) > 0) {
+            if (((pos != -1 && pos == node.getOwner()) || node.getUnits(pos) > 00) && !node.isFrozen()) {
                 selectedNode = node;
                 lastSelected = node;
             }
@@ -238,7 +242,7 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     }
 
     public void attack(Node node) {
-        if (selectedNode != null && node != null && node != selectedNode) {
+        if (selectedNode != null && node != null && node != selectedNode && !selectedNode.isFrozen()) {
             gameHandler.attack(node, selectedNode);
             selectedNode = null;
             lastAttacked = node;

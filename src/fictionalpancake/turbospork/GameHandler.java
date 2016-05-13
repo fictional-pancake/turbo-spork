@@ -174,6 +174,12 @@ public class GameHandler extends WebSocketClient {
                 String message = data.substring(colon + 1);
                 roomInfoListener.onChat(user, message);
                 break;
+            case "stasis":
+                getNodes().get(Integer.parseInt(data)).setFrozen(true);
+                break;
+            case "unstasis":
+                getNodes().get(Integer.parseInt(data)).setFrozen(false);
+                break;
             case "sync":
                 try {
                     if (syncDataListener != null) {
