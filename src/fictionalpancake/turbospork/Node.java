@@ -106,6 +106,9 @@ public class Node {
             case "owner":
                 owner = Integer.parseInt(value);
                 break;
+            case "stasis":
+                setFrozen(value.equals("true"));
+                break;
             default:
                 System.err.println("Unknown property: " + key);
         }
