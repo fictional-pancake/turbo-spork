@@ -14,6 +14,7 @@ public class Node {
     private double unitSpeed;
     private HashMap<Integer, Integer> units;
     private long lastUnitCheck;
+    private boolean frozen;
 
     public Node(Map map) {
         x = MathHelper.toInt(map.get("x"));
@@ -24,6 +25,7 @@ public class Node {
         unitSpeed = (double) map.get("unitSpeed");
         units = new HashMap<>();
         lastUnitCheck = System.currentTimeMillis();
+        frozen = false;
     }
 
     public int getY() {
@@ -62,13 +64,23 @@ public class Node {
         return tr;
     }
 
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(boolean isFrozen) {
+        frozen = isFrozen;
+    }
+
     public int getUnits(int owner) {
         synchronized (units) {
             int tr = 0;
             if(units.containsKey(owner)) {
                 tr = units.get(owner);
             }
-            if (owner == getOwner()) {
+            if (isFrozen()) {
+                lastUnitCheck = System.currentTimeMillis();
+            } else if (owner == getOwner()) {
                 while (lastUnitCheck + getGenerationTime() <= System.currentTimeMillis()) {
                     lastUnitCheck += getGenerationTime();
                     if (tr < getUnitCap()) {
@@ -93,6 +105,9 @@ public class Node {
         switch (key) {
             case "owner":
                 owner = Integer.parseInt(value);
+                break;
+            case "stasis":
+                setFrozen("true".equals(value));
                 break;
             default:
                 System.err.println("Unknown property: " + key);
