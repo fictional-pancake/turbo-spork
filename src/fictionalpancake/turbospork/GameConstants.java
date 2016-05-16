@@ -1,7 +1,7 @@
 package fictionalpancake.turbospork;
 
 public class GameConstants {
-    public static int PROTOCOL_VERSION = 11;
+    public static int PROTOCOL_VERSION = 13;
 
     public static int NODE_RADIUS = 5;
     public static int STASIS_FIELD_RADIUS = 7;
