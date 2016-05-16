@@ -1,3 +1,18 @@
+###### 5/13/16
+I finished writing the freeze spell. It prevents unit generation, death,
+movement, and transferring ownership of the node. When we add other spells
+we'll also have to make sure that frozen nodes aren't targetable. I haven't
+committed the code to master yet because we don't actually have a way to do
+spells, which is what I'm going to do next. I'm not sure how we're going to
+do the energy node, because it won't really be like a normal node. It doesn't
+make sense to select it, own it, or cast spells on it. However, if we make
+it into something besides a node, we'll have to add some new stuff to support
+it. Overall I think it will be easier to make it into a node with some weird
+properties, and just automatically kill units that are sent to it. I don't
+like the idea of having to check what node someone is operating on every time
+they try to move units or anything, but there doesn't seem to be a great
+alternative.
+
 ###### 5/6/16
 This week we are starting to implement spells. We came up with a couple ideas
 for spells we could potentially implement, including a "turbo spork" that
