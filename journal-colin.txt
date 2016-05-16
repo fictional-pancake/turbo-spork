@@ -230,3 +230,22 @@
 	log that also has warnings and errors from every
 	other app on the device, and sometimes the error
 	doesn't seem to show up at all.
+
+5/16/16:
+	This week, not much happened.  The game is pretty
+	much done besides possibly adding spells.  I seem
+	to have broken winning by changing == to ===,
+	because somehow the variables used are changing
+	types between numbers and strings.  I changed some
+	back, so now it should work.  I also modified the
+	bot so it could be included from the server code.
+	Now, if you wait too long in a matchme room, the
+	bot will join you.  I also added commands that
+	can be issued by an admin in chat.  It looks like
+	Android apps can check whether they were compiled
+	for release or debug, so the app will connect
+	to either the main or test server based on that.
+	We also need an icon for the app.  Right now, I'm
+	using a green circle, since that's the best I came
+	up with.  This sentence is only here for word
+	count.
