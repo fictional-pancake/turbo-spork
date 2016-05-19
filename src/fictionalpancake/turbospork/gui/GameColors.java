@@ -14,7 +14,9 @@ public class GameColors {
     };
 
     public static Color getColorForOwner(int owner) {
-        if (owner < 0) {
+        if (owner == -3) {
+            return Color.black;
+        } else if (owner < 0) {
             return Color.lightGray;
         } else if (owner < COLORS.length) {
             return COLORS[owner];

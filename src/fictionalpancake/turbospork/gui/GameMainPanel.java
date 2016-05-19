@@ -44,6 +44,18 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
                 node = nodes.get(i);
                 g.setColor(GameColors.getColorForOwner(node.getOwner()));
                 g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), d, d);
+                // custom draw yo moms house
+                if (node.getOwner() == -3) {
+                    for (int circle = GameConstants.HOUSE_NUM_CIRCLES - 1; circle >= 0; circle--) {
+                        g.setColor((circle % 2 == 0) ? Color.blue : new Color(0x420666));
+                        g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS + (GameConstants.NODE_RADIUS / GameConstants.HOUSE_NUM_CIRCLES) * circle),
+                                convertY(node.getX() - ((GameConstants.NODE_RADIUS / GameConstants.HOUSE_NUM_CIRCLES) * circle) / 2),
+                                (d / GameConstants.HOUSE_NUM_CIRCLES) * circle, (d / GameConstants.HOUSE_NUM_CIRCLES) * circle);
+                    }
+                }
+                if (node.isFrozen()) {
+                    g.drawOval(convertX(node.getX() - GameConstants.STASIS_FIELD_RADIUS), convertY(node.getY() - GameConstants.STASIS_FIELD_RADIUS), stasisdist, stasisdist);
+                }
                 drawNodeUnits(g, node);
             }
             g.setStroke(outlineStroke);

@@ -1,9 +1,11 @@
 package fictionalpancake.turbospork;
 
 public class GameConstants {
-    public static int PROTOCOL_VERSION = 11;
+    public static int PROTOCOL_VERSION = 14;
 
     public static int NODE_RADIUS = 5;
+    public static int STASIS_FIELD_RADIUS = 7;
+    public static int HOUSE_NUM_CIRCLES = 6;
     public static double UNIT_RADIUS = 0.3;
     public static double UNIT_MAX_DISTANCE = 1.25;
     public static int FIELD_SIZE = 100;
