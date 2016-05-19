@@ -53,9 +53,6 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
                                 (d / GameConstants.HOUSE_NUM_CIRCLES) * circle, (d / GameConstants.HOUSE_NUM_CIRCLES) * circle);
                     }
                 }
-                if (node.isFrozen()) {
-                    g.drawOval(convertX(node.getX() - GameConstants.STASIS_FIELD_RADIUS), convertY(node.getY() - GameConstants.STASIS_FIELD_RADIUS), stasisdist, stasisdist);
-                }
                 drawNodeUnits(g, node);
             }
             g.setStroke(outlineStroke);
