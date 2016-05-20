@@ -1,6 +1,5 @@
 package fictionalpancake.turbospork;
 
-import fictionalpancake.turbospork.gui.GameWindow;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.simple.parser.JSONParser;
@@ -140,7 +139,7 @@ public class GameHandler extends WebSocketClient {
                 try {
                     Map map = (Map) jsonParser.parse(data);
                     UnitGroup newGroup = new UnitGroup(map, this);
-                    synchronized(groups) {
+                    synchronized (groups) {
                         groups.add(newGroup);
                     }
                     int taken = 0;
@@ -189,7 +188,7 @@ public class GameHandler extends WebSocketClient {
                     }
                     Map<String, Long> groupMap = ((Map<String, Long>) map.get("groups"));
                     List<UnitGroup> groups = getUnitGroups();
-                    synchronized(groups) {
+                    synchronized (groups) {
                         Iterator<UnitGroup> it = groups.iterator();
                         while (it.hasNext()) {
                             UnitGroup group = it.next();
@@ -261,7 +260,7 @@ public class GameHandler extends WebSocketClient {
 
     public List<Node> getNodes() {
         if (groups != null) {
-            synchronized(groups) {
+            synchronized (groups) {
                 Iterator<UnitGroup> it = groups.iterator();
                 while (it.hasNext()) {
                     UnitGroup group = it.next();

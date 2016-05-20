@@ -1,28 +1,29 @@
 package fictionalpancake.turbospork.gui;
 
-import fictionalpancake.turbospork.*;
+import fictionalpancake.turbospork.GameHandler;
+import fictionalpancake.turbospork.Node;
+import fictionalpancake.turbospork.paint.GraphicsHandler;
+import fictionalpancake.turbospork.paint.IPainter;
+import fictionalpancake.turbospork.paint.PaintStyle;
+import fictionalpancake.turbospork.paint.Point;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.Random;
 
-class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener {
+class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener, IPainter {
     private GameHandler gameHandler;
-    private int xOffset;
-    private int yOffset;
-    private double scale;
     private int mouseY;
     private int mouseX;
     private Node selectedNode;
-    private Node lastSelected;
-    private Node lastAttacked;
-    private long lastPaint;
+    private GraphicsHandler graphicsHandler;
+    private Graphics2D g;
 
     public GameMainPanel(GameHandler gameHandler) {
         this.gameHandler = gameHandler;
+        this.graphicsHandler = new GraphicsHandler(gameHandler);
         addMouseMotionListener(this);
         addMouseListener(this);
     }
@@ -30,153 +31,9 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
-        Graphics2D g = ((Graphics2D) graphics);
+        g = (Graphics2D) graphics;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Stroke defaultStroke = g.getStroke();
-        Stroke outlineStroke = new BasicStroke(convertSize(GameConstants.OUTLINE_SIZE));
-        checkScaling();
-        java.util.List<Node> nodes = gameHandler.getNodes();
-        java.util.List<UnitGroup> groups = gameHandler.getUnitGroups();
-        if (nodes != null && groups != null) {
-            Node node;
-            int d = convertSize(GameConstants.NODE_RADIUS * 2);
-            for (int i = 0; i < nodes.size(); i++) {
-                node = nodes.get(i);
-                g.setColor(GameColors.getColorForOwner(node.getOwner()));
-                g.fillOval(convertX(node.getX() - GameConstants.NODE_RADIUS), convertY(node.getY() - GameConstants.NODE_RADIUS), d, d);
-                drawNodeUnits(g, node);
-            }
-            g.setStroke(outlineStroke);
-            Node underMouse = getNodeUnderMouse();
-            if (underMouse != null) {
-                g.setColor(Color.darkGray);
-                g.drawOval(convertX(underMouse.getX() - GameConstants.NODE_RADIUS), convertY(underMouse.getY() - GameConstants.NODE_RADIUS), d, d);
-            }
-            if (selectedNode != null) {
-                g.setColor(Color.pink);
-                g.drawOval(convertX(selectedNode.getX() - GameConstants.NODE_RADIUS), convertY(selectedNode.getY() - GameConstants.NODE_RADIUS), d, d);
-            }
-            g.setStroke(defaultStroke);
-            for (int i = 0; i < groups.size(); i++) {
-                UnitGroup group = groups.get(i);
-                drawUnitGroup(g, group);
-            }
-        } else {
-            String lastWinner = gameHandler.getLastWinner();
-            if (lastWinner != null) {
-                g.setColor(Color.gray);
-                g.setFont(new Font("SansSerif", Font.ITALIC, convertSize(GameConstants.WIN_TEXT_SIZE)));
-                drawStringCenter(g, lastWinner + " wins!", convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.FIELD_SIZE / 2));
-            }
-        }
-        g.setColor(Color.red);
-        if(gameHandler.isSpectating()) {
-            g.setFont(new Font("SansSerif", Font.PLAIN, convertSize(GameConstants.SPECTATING_TEXT_SIZE)));
-            g.drawString("Spectating", convertX(0), convertY(100)-g.getFontMetrics().getDescent());
-        }
-        g.setFont(new Font("SansSerif", Font.PLAIN, convertSize(GameConstants.SMALL_TEXT_SIZE)));
-        double fps = 1000/((double)(System.currentTimeMillis()-lastPaint));
-        String fpsText = ((int)fps)+" fps";
-        g.drawString(fpsText, convertX(0), convertY(0)+g.getFontMetrics().getAscent());
-        // draw game start message
-        if (gameHandler.hasGameData() && !gameHandler.isInProgress()) {
-            g.setColor(Color.red);
-            g.setFont(new Font("SansSerif", Font.ITALIC, convertSize(GameConstants.GAMEREADY_TEXT_SIZE)));
-            drawStringCenter(g, "Game starting soon", convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.FIELD_SIZE / 2));
-        }
-        lastPaint = System.currentTimeMillis();
-    }
-
-    private Node getNodeUnderMouse() {
-        java.util.List<Node> nodes = gameHandler.getNodes();
-        Node tr = null;
-        if (nodes != null) {
-            for (Node node : nodes) {
-                if (isMouseOverNode(node)) {
-                    tr = node;
-                }
-            }
-        }
-        return tr;
-    }
-
-    private void drawUnitGroup(Graphics g, int seed1, int seed2, double progress, int owner, int numUnits, double x, double y) {
-        Random rand1 = new Random(seed1);
-        Random rand2 = new Random(seed2);
-
-        int diameter = convertSize(GameConstants.UNIT_RADIUS * 2);
-        Color color = GameColors.getColorForOwner(owner).darker();
-        for (int j = 0; j < numUnits; j++) {
-            Point coords1 = getRandomUnitCoords(rand1, x, y);
-            Point coords2 = getRandomUnitCoords(rand2, x, y);
-
-            int unitX = (int) (coords1.getX() + (coords2.getX() - coords1.getX()) * progress);
-            int unitY = (int) (coords1.getY() + (coords2.getY() - coords1.getY()) * progress);
-
-            // draw the unit
-            g.setColor(color);
-            g.fillOval(unitX, unitY, diameter, diameter);
-            g.setColor(Color.black);
-            g.drawOval(unitX, unitY, diameter, diameter);
-        }
-    }
-
-    private void drawNodeUnits(Graphics g, Node node) {
-        for (int owner : node.getUnitOwners()) {
-            int seed = getGroupSeed(node, owner);
-            drawUnitGroup(g, seed, seed, 1, owner, node.getUnits(owner), node.getX(), node.getY());
-        }
-    }
-
-    private void drawUnitGroup(Graphics g, UnitGroup group) {
-        int owner = group.getOwner();
-        drawUnitGroup(g, getGroupSeed(group.getSource(), owner), getGroupSeed(group.getDest(), owner), group.getProgress(), owner, group.getUnits(), group.getX(), group.getY());
-    }
-
-    private int getGroupSeed(Node node, int owner) {
-        return gameHandler.indexOf(node) * (owner + 1);
-    }
-
-    private Point getRandomUnitCoords(Random rand, double x, double y) {
-        // generate a random angle and distance for the node to be at
-        double angle = rand.nextDouble() * 2 * Math.PI;
-        // sqrt is magic, makes things more evenly spaced
-        double distance = Math.sqrt(rand.nextDouble()) * GameConstants.UNIT_MAX_DISTANCE * GameConstants.NODE_RADIUS;
-        // convert those to X and Y coordinates
-        int unitX = convertX(distance * Math.cos(angle) + x);
-        int unitY = convertY(distance * Math.sin(angle) + y);
-        return new Point(unitX, unitY);
-    }
-
-    private int convertX(double x) {
-        return (int) (xOffset + x * scale);
-    }
-
-    private int convertY(double y) {
-        return (int) (yOffset + y * scale);
-    }
-
-    private int convertSize(double s) {
-        return (int) (s * scale);
-    }
-
-    public void checkScaling() {
-        int minDimension;
-        if (getWidth() < getHeight()) {
-            xOffset = 0;
-            yOffset = (getHeight() - getWidth()) / 2;
-            minDimension = getWidth();
-        } else {
-            xOffset = (getWidth() - getHeight()) / 2;
-            yOffset = 0;
-            minDimension = getHeight();
-        }
-        scale = ((double) minDimension) / GameConstants.FIELD_SIZE;
-    }
-
-    private void drawStringCenter(Graphics g, String string, int centerX, int centerY) {
-        FontMetrics metrics = g.getFontMetrics();
-        g.drawString(string, centerX - metrics.stringWidth(string) / 2, centerY /*- metrics.getHeight() / 2*/);
+        graphicsHandler.paint(this);
     }
 
     @Override
@@ -190,9 +47,6 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
         mouseY = e.getY();
     }
 
-    private boolean isMouseOverNode(Node node) {
-        return MathHelper.distance(mouseX, mouseY, convertX(node.getX()), convertY(node.getY())) <= convertSize(GameConstants.NODE_RADIUS);
-    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -201,20 +55,14 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Node underMouse = getNodeUnderMouse();
-        if (selectedNode == null) {
-            select(underMouse);
-        } else if (selectedNode == underMouse) {
-            selectedNode = null;
-        }
+        Node underMouse = graphicsHandler.getNodeUnderMouse(this);
+        graphicsHandler.select(underMouse);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (selectedNode != null) {
-            Node underMouse = getNodeUnderMouse();
-            attack(underMouse);
-        }
+        Node underMouse = graphicsHandler.getNodeUnderMouse(this);
+        graphicsHandler.attack(underMouse);
     }
 
     @Override
@@ -227,29 +75,53 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
 
     }
 
-    public void select(Node node) {
-        if (selectedNode == null && node != null && gameHandler.isInProgress()) {
-            int pos = gameHandler.getPosition();
-            if ((pos != -1 && pos == node.getOwner()) || node.getUnits(pos) > 0) {
-                selectedNode = node;
-                lastSelected = node;
-            }
+    @Override
+    public void drawCircle(PaintStyle style, int x, int y, int radius) {
+        applyStyle(style);
+        if (style.fill) {
+            g.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+        } else {
+            g.drawOval(x - radius, y - radius, radius * 2, radius * 2);
         }
     }
 
-    public void attack(Node node) {
-        if (selectedNode != null && node != null && node != selectedNode) {
-            gameHandler.attack(node, selectedNode);
-            selectedNode = null;
-            lastAttacked = node;
+    @Override
+    public void drawText(PaintStyle style, String text, int x, int y) {
+        applyStyle(style);
+        FontMetrics metrics = g.getFontMetrics();
+        int ax = x;
+        int ay = y;
+        if (style.alignX == PaintStyle.Align.CENTER) {
+            ax -= metrics.stringWidth(text) / 2;
+        } else if (style.alignX == PaintStyle.Align.RIGHT) {
+            ax -= metrics.stringWidth(text);
         }
+        if (style.alignY == PaintStyle.Align.TOP) {
+            ax += metrics.getAscent();
+        } else if (style.alignY == PaintStyle.Align.BOTTOM) {
+            ax -= metrics.getDescent();
+        } else if (style.alignY == PaintStyle.Align.CENTER) {
+            ax -= metrics.getDescent() / 2;
+        }
+        g.drawString(text, ax, ay);
+    }
+
+    @Override
+    public Point getMousePos() {
+        return new Point(mouseX, mouseY);
+    }
+
+    public void applyStyle(PaintStyle style) {
+        g.setColor(TurboSpork.convertColor(style.color));
+        g.setStroke(new BasicStroke(style.strokeWidth));
+        g.setFont(new Font("SansSerif", Font.PLAIN, style.textSize));
     }
 
     public void selectLast() {
-        select(lastSelected);
+        graphicsHandler.selectLast();
     }
 
     public void attackLast() {
-        attack(lastAttacked);
+        graphicsHandler.attackLast();
     }
 }

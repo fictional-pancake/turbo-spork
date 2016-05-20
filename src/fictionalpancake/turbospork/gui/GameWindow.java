@@ -1,6 +1,10 @@
 package fictionalpancake.turbospork.gui;
 
-import fictionalpancake.turbospork.*;
+import fictionalpancake.turbospork.ChatMessage;
+import fictionalpancake.turbospork.DataListener;
+import fictionalpancake.turbospork.GameHandler;
+import fictionalpancake.turbospork.RoomInfoListener;
+import fictionalpancake.turbospork.paint.GameColors;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -271,7 +275,7 @@ public class GameWindow extends JPanel implements DataListener<String> {
                 Color userColor = Color.black;
                 int userPosition = gameHandler.getPosition(((ChatMessage) value).getUser());
                 if (userPosition != -1) {
-                    userColor = GameColors.getColorForOwner(userPosition);
+                    userColor = TurboSpork.convertColor(GameColors.getColorForOwner(userPosition));
                 }
                 tr.setForeground(userColor);
                 return tr;
@@ -282,7 +286,7 @@ public class GameWindow extends JPanel implements DataListener<String> {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 Component tr = super.getListCellRendererComponent(list, value, index, gameHandler.adjustForRemoved(index) == gameHandler.getPosition(), false);
-                tr.setForeground(GameColors.getColorForOwner(gameHandler.adjustForRemoved(index)));
+                tr.setForeground(TurboSpork.convertColor(GameColors.getColorForOwner(gameHandler.adjustForRemoved(index))));
                 return tr;
             }
         }

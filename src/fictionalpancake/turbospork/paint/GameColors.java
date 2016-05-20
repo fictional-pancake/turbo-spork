@@ -1,21 +1,21 @@
-package fictionalpancake.turbospork.gui;
-import java.awt.*;
+package fictionalpancake.turbospork.paint;
+
 import java.util.Random;
 
 public class GameColors {
     public static Color[] COLORS = {
-            Color.green,
-            Color.blue,
-            Color.red,
-            Color.yellow,
-            Color.magenta,
-            Color.cyan,
-            Color.orange
+            Color.GREEN,
+            Color.BLUE,
+            Color.RED,
+            Color.MAGENTA,
+            Color.CYAN,
+            Color.YELLOW,
+            Color.ORANGE
     };
 
     public static Color getColorForOwner(int owner) {
         if (owner < 0) {
-            return Color.lightGray;
+            return Color.LIGHT_GRAY;
         } else if (owner < COLORS.length) {
             return COLORS[owner];
         } else {
