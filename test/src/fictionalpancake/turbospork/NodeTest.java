@@ -1,6 +1,6 @@
 package fictionalpancake.turbospork;
 
-import fictionalpancake.turbospork.gui.GameColors;
+import fictionalpancake.turbospork.paint.GameColors;
 import org.junit.Assert;
 import org.junit.Test;
 

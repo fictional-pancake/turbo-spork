@@ -1,10 +1,6 @@
 package fictionalpancake.turbospork.gui;
 
-import fictionalpancake.turbospork.GameConstants;
-
 import javax.swing.*;
-import java.awt.*;
-import java.util.Random;
 
 public class TurboSpork {
 
@@ -34,6 +30,12 @@ public class TurboSpork {
 
         JFrame login = LoginWindow.open(credentials, uri);
         login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+
+
+    public static java.awt.Color convertColor(fictionalpancake.turbospork.paint.Color color) {
+        return new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }
 
 }
