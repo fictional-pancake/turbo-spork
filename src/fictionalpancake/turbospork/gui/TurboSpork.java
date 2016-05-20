@@ -33,7 +33,6 @@ public class TurboSpork {
     }
 
 
-
     public static java.awt.Color convertColor(fictionalpancake.turbospork.paint.Color color) {
         return new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
     }

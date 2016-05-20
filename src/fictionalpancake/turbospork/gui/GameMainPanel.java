@@ -1,8 +1,10 @@
 package fictionalpancake.turbospork.gui;
 
-import fictionalpancake.turbospork.*;
-import fictionalpancake.turbospork.paint.*;
-import fictionalpancake.turbospork.paint.Color;
+import fictionalpancake.turbospork.GameHandler;
+import fictionalpancake.turbospork.Node;
+import fictionalpancake.turbospork.paint.GraphicsHandler;
+import fictionalpancake.turbospork.paint.IPainter;
+import fictionalpancake.turbospork.paint.PaintStyle;
 import fictionalpancake.turbospork.paint.Point;
 
 import javax.swing.*;
@@ -76,11 +78,10 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
     @Override
     public void drawCircle(PaintStyle style, int x, int y, int radius) {
         applyStyle(style);
-        if(style.fill) {
-            g.fillOval(x-radius, y-radius, radius*2, radius*2);
-        }
-        else {
-            g.drawOval(x-radius, y-radius, radius*2, radius*2);
+        if (style.fill) {
+            g.fillOval(x - radius, y - radius, radius * 2, radius * 2);
+        } else {
+            g.drawOval(x - radius, y - radius, radius * 2, radius * 2);
         }
     }
 
@@ -90,20 +91,17 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
         FontMetrics metrics = g.getFontMetrics();
         int ax = x;
         int ay = y;
-        if(style.alignX == PaintStyle.Align.CENTER) {
-            ax -= metrics.stringWidth(text)/2;
-        }
-        else if(style.alignX == PaintStyle.Align.RIGHT) {
+        if (style.alignX == PaintStyle.Align.CENTER) {
+            ax -= metrics.stringWidth(text) / 2;
+        } else if (style.alignX == PaintStyle.Align.RIGHT) {
             ax -= metrics.stringWidth(text);
         }
-        if(style.alignY == PaintStyle.Align.TOP) {
+        if (style.alignY == PaintStyle.Align.TOP) {
             ax += metrics.getAscent();
-        }
-        else if(style.alignY == PaintStyle.Align.BOTTOM) {
+        } else if (style.alignY == PaintStyle.Align.BOTTOM) {
             ax -= metrics.getDescent();
-        }
-        else if(style.alignY == PaintStyle.Align.CENTER) {
-            ax -= metrics.getDescent()/2;
+        } else if (style.alignY == PaintStyle.Align.CENTER) {
+            ax -= metrics.getDescent() / 2;
         }
         g.drawString(text, ax, ay);
     }

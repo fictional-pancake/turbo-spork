@@ -154,7 +154,7 @@ public class LoginWindow extends JPanel implements ActionListener {
                 try {
                     gh.connectBlocking();
                     String authMsg = "auth:";
-                    if(e.getSource() != guestButton) {
+                    if (e.getSource() != guestButton) {
                         authMsg += username.getText() + ":" + String.valueOf(password.getPassword()) + ":";
                     }
                     authMsg += GameConstants.PROTOCOL_VERSION;

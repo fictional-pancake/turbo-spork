@@ -152,8 +152,7 @@ public class GraphicsHandler {
                 selectedNode = node;
                 lastSelected = node;
             }
-        }
-        else if(selectedNode != null && selectedNode == node) {
+        } else if (selectedNode != null && selectedNode == node) {
             selectedNode = null;
         }
     }

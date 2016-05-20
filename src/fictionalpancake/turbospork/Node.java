@@ -53,8 +53,8 @@ public class Node {
 
     public int getGenerationTime() {
         int tr = generationTime;
-        for(int owner : units.keySet()) {
-            if(units.get(owner) > 0 && owner != getOwner()) {
+        for (int owner : units.keySet()) {
+            if (units.get(owner) > 0 && owner != getOwner()) {
                 tr *= 2;
                 break;
             }
@@ -65,7 +65,7 @@ public class Node {
     public int getUnits(int owner) {
         synchronized (units) {
             int tr = 0;
-            if(units.containsKey(owner)) {
+            if (units.containsKey(owner)) {
                 tr = units.get(owner);
             }
             if (owner == getOwner()) {
@@ -83,7 +83,7 @@ public class Node {
 
     public void addUnits(int owner, int units) {
         int c = 0;
-        if(this.units.containsKey(owner)) {
+        if (this.units.containsKey(owner)) {
             c = this.units.get(owner);
         }
         this.units.put(owner, c + units);
@@ -119,7 +119,7 @@ public class Node {
     }
 
     public List<Integer> getUnitOwners() {
-        synchronized(units) {
+        synchronized (units) {
             List<Integer> tr = new ArrayList<>();
             for (int owner : units.keySet()) {
                 if (getUnits(owner) > 0) {

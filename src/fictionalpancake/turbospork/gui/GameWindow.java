@@ -1,6 +1,9 @@
 package fictionalpancake.turbospork.gui;
 
-import fictionalpancake.turbospork.*;
+import fictionalpancake.turbospork.ChatMessage;
+import fictionalpancake.turbospork.DataListener;
+import fictionalpancake.turbospork.GameHandler;
+import fictionalpancake.turbospork.RoomInfoListener;
 import fictionalpancake.turbospork.paint.GameColors;
 
 import javax.swing.*;

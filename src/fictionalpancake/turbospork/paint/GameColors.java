@@ -1,4 +1,5 @@
 package fictionalpancake.turbospork.paint;
+
 import java.util.Random;
 
 public class GameColors {
