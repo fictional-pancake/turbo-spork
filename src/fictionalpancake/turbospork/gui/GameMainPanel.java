@@ -2,9 +2,7 @@ package fictionalpancake.turbospork.gui;
 
 import fictionalpancake.turbospork.GameHandler;
 import fictionalpancake.turbospork.Node;
-import fictionalpancake.turbospork.paint.GraphicsHandler;
-import fictionalpancake.turbospork.paint.IPainter;
-import fictionalpancake.turbospork.paint.PaintStyle;
+import fictionalpancake.turbospork.paint.*;
 import fictionalpancake.turbospork.paint.Point;
 
 import javax.swing.*;
@@ -12,6 +10,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener, IPainter {
     private GameHandler gameHandler;
@@ -97,11 +98,11 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
             ax -= metrics.stringWidth(text);
         }
         if (style.alignY == PaintStyle.Align.TOP) {
-            ax += metrics.getAscent();
+            ay += metrics.getAscent();
         } else if (style.alignY == PaintStyle.Align.BOTTOM) {
-            ax -= metrics.getDescent();
+            ay -= metrics.getDescent();
         } else if (style.alignY == PaintStyle.Align.CENTER) {
-            ax -= metrics.getDescent() / 2;
+            ay -= metrics.getDescent() / 2;
         }
         g.drawString(text, ax, ay);
     }
@@ -123,5 +124,18 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
 
     public void attackLast() {
         graphicsHandler.attackLast();
+    }
+
+    public void saveScreenshot() {
+        SVGPainter painter = new SVGPainter();
+        graphicsHandler.paint(painter);
+        try {
+            FileOutputStream fos = new FileOutputStream(System.getProperty("user.home")+"/turbo-spork-screenshot-"+System.currentTimeMillis()+".svg");
+            fos.write(painter.getResult().getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Unable to save screenshot.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

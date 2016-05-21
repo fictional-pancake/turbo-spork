@@ -44,6 +44,12 @@ public class GameWindow extends JPanel implements DataListener<String> {
             openDebugDialog();
         }
     };
+    private final NiceAction ACTION_SCREENSHOT = new NiceAction("Take Screenshot", KeyEvent.VK_S, KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0)) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            mainPanel.saveScreenshot();
+        }
+    };
     private JTextArea syncDataComp;
 
     private void openDebugDialog() {
@@ -109,6 +115,7 @@ public class GameWindow extends JPanel implements DataListener<String> {
         gameMenu.add(ACTION_RESELECT_NODE);
         gameMenu.add(ACTION_REATTACK_NODE);
         gameMenu.add(ACTION_OPEN_DEBUG_DIALOG);
+        gameMenu.add(ACTION_SCREENSHOT);
         bar.add(gameMenu);
         return bar;
     }
