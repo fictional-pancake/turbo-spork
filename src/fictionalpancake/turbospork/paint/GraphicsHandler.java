@@ -197,9 +197,15 @@ public class GraphicsHandler {
         return new Point(unitX, unitY);
     }
 
-    private boolean isMouseOverNode(Node node, IPainter g) {
-        Point mouse = g.getMousePos();
+    public boolean isMouseOverNode(Node node, Point mouse) {
+        if(mouse == null) {
+            return false;
+        }
         return MathHelper.distance(mouse.getX(), mouse.getY(), convertX(node.getX()), convertY(node.getY())) <= convertSize(GameConstants.NODE_RADIUS);
+    }
+
+    public boolean isMouseOverNode(Node node, IPainter graphics) {
+        return isMouseOverNode(node, graphics.getMousePos());
     }
 
     public Node getNodeUnderMouse(IPainter g) {
