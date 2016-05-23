@@ -1,3 +1,18 @@
+###### 5/20/16
+I've written most of the server-side code for energy and yo moms house (where
+you send units to be sacrificed to become energy). On the client side there is
+still no way to see how much energy you have or to cast spells. I think Colin
+is going to write that after I figure out all of the backend spell code. I'm
+planning to change it so that all spells are cast through a "spell" message,
+which then specifies what spell is to be cast and we can have a switch
+statement that handles different spells. Then the server can check if the
+player has enough energy to cast that spell, and if they do then the spell is
+cast. Our biggest concern at this point is the presentation, which we have not
+started. I was hoping to have spells done by the time of the presentation but I
+don't think that is going to happen. I think for the presentation we'll do a
+description of how we wrote our game, how the client and server communicate,
+and then a demonstration. Spectator mode will come in handy here.
+
 ###### 5/13/16
 I finished writing the freeze spell. It prevents unit generation, death,
 movement, and transferring ownership of the node. When we add other spells
