@@ -249,3 +249,24 @@
 	using a green circle, since that's the best I came
 	up with.  This sentence is only here for word
 	count.
+
+5/22/16:
+	I decided to rewrite how drawing works.
+	Previously, drawing was done using AWT Graphics
+	for the desktop client, and Android Graphics for
+	the Android client.  This meant that everything we
+	draw had to be implemented twice.  That's not too
+	bad, but it's still an annoying extra step.  Now,
+	I've added an abstraction layer so that the
+	drawing is consistent between both platforms.
+	Currently, it supports drawing circles and text,
+	since that's all we need.  This also means we can
+	take screenshots as SVGs, which is not something
+	you see a lot.  I also worked on login tokens.
+	We can now generate tokens that can be used to
+	log in multiple times without saving your actual
+	credentials on the client.  I've done some work
+	on using it, but only for Android, since the
+	desktop client has a server selector, which makes
+	things weird.  I also fixed spectating, which has
+	been broken since the game start redesign.
