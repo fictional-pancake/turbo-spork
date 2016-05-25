@@ -292,7 +292,7 @@ public class GameHandler extends WebSocketClient {
             Collections.sort(removed);
             for (int j : removed) {
                 if (j <= tr) {
-                    tr--;
+                    tr++;
                 }
             }
         }
