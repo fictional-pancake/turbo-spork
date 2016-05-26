@@ -235,7 +235,6 @@ public class GameWindow extends JPanel implements DataListener<String> {
         public void onJoinedRoom(String id) {
             ((DefaultListModel<String>) userList.getModel()).addElement(id);
             gameWindow.updateActionState();
-            clearChat();
             setChatEnabled(true);
         }
 
