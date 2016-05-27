@@ -32,7 +32,16 @@ public class GraphicsHandler {
                 PaintStyle style = new PaintStyle();
                 style.color = GameColors.getColorForOwner(node.getOwner());
                 g.drawCircle(style, convertX(node.getX()), convertY(node.getY()), r);
-                drawNodeUnits(g, node);
+                // draw yo moms house
+                if (node.getOwner() == -3) {
+                    Color purple = new Color(0x420666);
+                    for (int circle = GameConstants.HOUSE_NUM_CIRCLES - 1; circle >= 0; circle--) {
+                        style.color = ((circle % 2 == 0) ? Color.BLUE : purple);
+                        g.drawCircle(style, convertX(node.getX()), convertY(node.getY()), (r / GameConstants.HOUSE_NUM_CIRCLES) * circle);
+                    }
+                } else {
+                    drawNodeUnits(g, node);
+                }
             }
             Node underMouse = getNodeUnderMouse(g);
             if (underMouse != null) {
