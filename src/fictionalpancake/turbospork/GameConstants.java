@@ -12,4 +12,7 @@ public class GameConstants {
     public static double OUTLINE_SIZE = 0.5;
     public static int SPECTATING_TEXT_SIZE = 5;
     public static int SMALL_TEXT_SIZE = 2;
+    public static int ERROR_TEXT_SIZE = 4;
+    public static int ERROR_DISTANCE_FROM_TOP = 20;
+    public static int ERROR_DURATION = 1750;
 }

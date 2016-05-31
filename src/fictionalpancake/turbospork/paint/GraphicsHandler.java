@@ -80,6 +80,15 @@ public class GraphicsHandler {
             style.alignY = PaintStyle.Align.CENTER;
             g.drawText(style, "Game starting soon", convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.FIELD_SIZE / 2));
         }
+        // display most recent error
+        if (gameHandler.getLastError() != null &&  System.currentTimeMillis() - gameHandler.getLastErrorTime() < GameConstants.ERROR_DURATION) {
+            PaintStyle style = new PaintStyle();
+            style.color = Color.RED;
+            style.textSize = convertSize(GameConstants.ERROR_TEXT_SIZE);
+            style.alignX = PaintStyle.Align.CENTER;
+            style.alignY = PaintStyle.Align.TOP;
+            g.drawText(style, gameHandler.getLastError(), convertX(GameConstants.FIELD_SIZE / 2), convertY(GameConstants.ERROR_DISTANCE_FROM_TOP));
+        }
         PaintStyle style = new PaintStyle();
         style.color = Color.RED;
         style.textSize = convertSize(GameConstants.SMALL_TEXT_SIZE);

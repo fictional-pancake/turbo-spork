@@ -23,12 +23,16 @@ public class GameHandler extends WebSocketClient {
     private List<String> users;
     private List<Integer> removed;
     private DataListener<String> syncDataListener;
+    private String lastError;
+    private double lastErrorTime;
 
     private JSONParser jsonParser = new JSONParser();
 
     public GameHandler(DataListener<String> firstMessageListener, URI uri) {
         super(uri);
         gameStarted = false;
+        lastError = null;
+        lastErrorTime = 0;
         this.firstMessageListener = firstMessageListener;
         users = new ArrayList<String>();
 
@@ -111,9 +115,8 @@ public class GameHandler extends WebSocketClient {
                 }
                 break;
             case "error":
-                if (userID != null && roomInfoListener != null) {
-                    roomInfoListener.onError(data);
-                }
+                lastError = data;
+                lastErrorTime = System.currentTimeMillis();
                 break;
             case "gameinfo":
                 try {
@@ -236,6 +239,14 @@ public class GameHandler extends WebSocketClient {
 
     public void sendChat(String message) {
         send("chat:" + message);
+    }
+
+    public String getLastError() {
+        return lastError;
+    }
+
+    public double getLastErrorTime() {
+        return lastErrorTime;
     }
 
     public String getUserID() {
