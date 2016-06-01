@@ -97,11 +97,11 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
             ax -= metrics.stringWidth(text);
         }
         if (style.alignY == PaintStyle.Align.TOP) {
-            ax += metrics.getAscent();
+            ay += metrics.getAscent();
         } else if (style.alignY == PaintStyle.Align.BOTTOM) {
-            ax -= metrics.getDescent();
+            ay -= metrics.getDescent();
         } else if (style.alignY == PaintStyle.Align.CENTER) {
-            ax -= metrics.getDescent() / 2;
+            ay -= metrics.getDescent() / 2;
         }
         g.drawString(text, ax, ay);
     }
