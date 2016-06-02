@@ -16,4 +16,6 @@ public class GameConstants {
     public static int ERROR_TEXT_SIZE = 4;
     public static int ERROR_DISTANCE_FROM_TOP = 20;
     public static int ERROR_DURATION = 1750;
+    public static int MAX_ENERGY = 100;
+    public static int ENERGY_BAR_HEIGHT = 2;
 }

@@ -81,6 +81,15 @@ public class GraphicsHandler {
             style.alignY = PaintStyle.Align.BOTTOM;
             g.drawText(style, "Spectating", convertX(0), convertY(100));
         }
+        else {
+            // draw energy bar
+            PaintStyle bgStyle = new PaintStyle();
+            bgStyle.color = Color.DARK_GRAY;
+            g.drawRectangle(bgStyle, convertX(0), convertY(GameConstants.FIELD_SIZE-GameConstants.ENERGY_BAR_HEIGHT), convertSize(GameConstants.FIELD_SIZE), convertSize(GameConstants.ENERGY_BAR_HEIGHT));
+            PaintStyle barStyle = new PaintStyle();
+            barStyle.color = GameColors.getColorForOwner(gameHandler.getPosition());
+            g.drawRectangle(barStyle, convertX(0), convertY(GameConstants.FIELD_SIZE-GameConstants.ENERGY_BAR_HEIGHT), ((int) (convertSize(GameConstants.FIELD_SIZE) * ((double) gameHandler.getEnergy()) / GameConstants.MAX_ENERGY)), convertSize(GameConstants.ENERGY_BAR_HEIGHT));
+        }
         // draw game start message
         if (gameHandler.hasGameData() && !gameHandler.isInProgress()) {
             PaintStyle style = new PaintStyle();
