@@ -111,6 +111,17 @@ class GameMainPanel extends JPanel implements MouseMotionListener, MouseListener
         return new Point(mouseX, mouseY);
     }
 
+    @Override
+    public void drawRectangle(PaintStyle style, int x, int y, int width, int height) {
+        applyStyle(style);
+        if(style.fill) {
+            g.fillRect(x, y, width, height);
+        }
+        else {
+            g.drawRect(x, y, width, height);
+        }
+    }
+
     public void applyStyle(PaintStyle style) {
         g.setColor(TurboSpork.convertColor(style.color));
         g.setStroke(new BasicStroke(style.strokeWidth));

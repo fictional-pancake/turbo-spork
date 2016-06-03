@@ -32,7 +32,17 @@ public class GraphicsHandler {
                 PaintStyle style = new PaintStyle();
                 style.color = GameColors.getColorForOwner(node.getOwner());
                 g.drawCircle(style, convertX(node.getX()), convertY(node.getY()), r);
-                drawNodeUnits(g, node);
+                // draw yo moms house
+                if (node.getOwner() == -3) {
+                    PaintStyle ymhStyle = new PaintStyle();
+                    Color purple = new Color(0x420666);
+                    for (int circle = GameConstants.HOUSE_NUM_CIRCLES - 1; circle >= 0; circle--) {
+                        ymhStyle.color = ((circle % 2 == 0) ? Color.BLUE : purple);
+                        g.drawCircle(ymhStyle, convertX(node.getX()), convertY(node.getY()), (r / GameConstants.HOUSE_NUM_CIRCLES) * circle);
+                    }
+                } else {
+                    drawNodeUnits(g, node);
+                }
             }
             Node underMouse = getNodeUnderMouse(g);
             if (underMouse != null) {
@@ -70,6 +80,15 @@ public class GraphicsHandler {
             style.textSize = convertSize(GameConstants.SPECTATING_TEXT_SIZE);
             style.alignY = PaintStyle.Align.BOTTOM;
             g.drawText(style, "Spectating", convertX(0), convertY(100));
+        }
+        else {
+            // draw energy bar
+            PaintStyle bgStyle = new PaintStyle();
+            bgStyle.color = Color.DARK_GRAY;
+            g.drawRectangle(bgStyle, convertX(0), convertY(GameConstants.FIELD_SIZE-GameConstants.ENERGY_BAR_HEIGHT), convertSize(GameConstants.FIELD_SIZE), convertSize(GameConstants.ENERGY_BAR_HEIGHT));
+            PaintStyle barStyle = new PaintStyle();
+            barStyle.color = GameColors.getColorForOwner(gameHandler.getPosition());
+            g.drawRectangle(barStyle, convertX(0), convertY(GameConstants.FIELD_SIZE-GameConstants.ENERGY_BAR_HEIGHT), ((int) (convertSize(GameConstants.FIELD_SIZE) * ((double) gameHandler.getEnergy()) / GameConstants.MAX_ENERGY)), convertSize(GameConstants.ENERGY_BAR_HEIGHT));
         }
         // draw game start message
         if (gameHandler.hasGameData() && !gameHandler.isInProgress()) {

@@ -22,6 +22,7 @@ public class GameHandler extends WebSocketClient {
     private List<UnitGroup> groups;
     private List<String> users;
     private List<Integer> removed;
+    private int energy;
     private DataListener<String> syncDataListener;
     private String lastError;
     private double lastErrorTime;
@@ -128,6 +129,8 @@ public class GameHandler extends WebSocketClient {
                     for (Map currentNodeInfo : nodeInfo) {
                         nodes.add(new Node(currentNodeInfo));
                     }
+                    List energyInfo = (List) map.get("energy");
+                    energy = MathHelper.toInt(energyInfo.get(getPosition()));
                     if (roomInfoListener != null) {
                         roomInfoListener.onGameStart();
                     }
@@ -207,8 +210,11 @@ public class GameHandler extends WebSocketClient {
                     e.printStackTrace();
                 }
                 break;
+            case "energy":
+                energy = Integer.parseInt(data);
+                break;
             default:
-                System.err.println("Unrecognized command");
+                System.err.println("Unrecognized command: "+command);
         }
     }
 
@@ -217,6 +223,7 @@ public class GameHandler extends WebSocketClient {
         groups = null;
         removed = null;
         gameStarted = false;
+        energy = 0;
     }
 
     @Override
@@ -343,5 +350,9 @@ public class GameHandler extends WebSocketClient {
 
     public void setSyncDataListener(DataListener<String> syncDataListener) {
         this.syncDataListener = syncDataListener;
+    }
+
+    public int getEnergy() {
+        return energy;
     }
 }
