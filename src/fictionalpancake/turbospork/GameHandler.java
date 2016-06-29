@@ -25,6 +25,8 @@ public class GameHandler extends WebSocketClient {
     private DataListener<String> syncDataListener;
     private String lastError;
     private double lastErrorTime;
+    private String pauser;
+    private double paused;
 
     private JSONParser jsonParser = new JSONParser();
 
@@ -33,6 +35,8 @@ public class GameHandler extends WebSocketClient {
         gameStarted = false;
         lastError = null;
         lastErrorTime = 0;
+        pauser = null;
+        paused = 0;
         this.firstMessageListener = firstMessageListener;
         users = new ArrayList<String>();
 
@@ -137,6 +141,18 @@ public class GameHandler extends WebSocketClient {
                 break;
             case "gamestart":
                 gameStarted = true;
+                break;
+            case "pause":
+                pauser = spl[0];
+                paused = System.currentTimeMillis();
+                break;
+            case "unpause":
+                if (data == null) {
+                    pauser = "server";
+                } else {
+                    pauser = spl[0];
+                }
+                paused = 0;
                 break;
             case "send":
                 try {
